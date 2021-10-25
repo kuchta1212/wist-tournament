@@ -22,9 +22,9 @@
 
         void CreateGame(List<string> participantsIds, GameType type, string tournamentId);
 
-        void SetRoundTips(Dictionary<string, int> participantsTips, string roundId);
+        void SetRoundBets(Dictionary<string, int> participantsTips, string roundId);
 
-        void SetRoundTipsResult(Dictionary<string, bool> participantsResult, string roundId);
+        void SetRoundBetsResult(Dictionary<string, bool> participantsResult, string roundId);
 
         void SetGameOrder(Dictionary<string, int> playersOrder, string gameId);
 
@@ -33,5 +33,7 @@
         void SetParticipantAsLeft(string tournamentId, string participantId);
 
         void AddParticipant(string tournamentId, string userId);
+
+        Game GetGame(string gameId);
     }
 }

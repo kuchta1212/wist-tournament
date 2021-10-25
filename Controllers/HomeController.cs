@@ -113,7 +113,7 @@
         }
 
         [HttpGet("tournaments/{tournamentId}")]
-        public IActionResult GetTournaments([FromRoute]string tournamentId)
+        public IActionResult GetTournament([FromRoute]string tournamentId)
         {
             return new OkObjectResult(this.dbContextWrapper.GetTournament(tournamentId));
         }
@@ -138,5 +138,40 @@
             return new OkResult();
         }
 
+
+        [HttpPost("tournament/game/{gameId}/order")]
+        public IActionResult SetGameOrder([FromBody] Dictionary<string, int> order, [FromRoute]string gameId)
+        {
+            this.dbContextWrapper.SetGameOrder(order, gameId);
+            return new OkResult();
+        }
+
+        [HttpGet("tournament/game")]
+        public IActionResult GetGame([FromQuery] string gameId)
+        {
+            var game = this.dbContextWrapper.GetGame(gameId);
+            return new OkObjectResult(game);
+        }
+
+        [HttpPost("tournament/game/round/{roundId}/bets")]
+        public IActionResult SetBets([FromRoute] string roundId, [FromBody] Dictionary<string, int> bets)
+        {
+            this.dbContextWrapper.SetRoundBets(bets, roundId);
+            return new OkResult();
+        }
+
+        [HttpPost("tournament/game/round/{roundId}/bets/results")]
+        public IActionResult SetBetsResult([FromRoute] string roundId, [FromBody] Dictionary<string, bool> results)
+        {
+            this.dbContextWrapper.SetRoundBetsResult(results, roundId);
+            return new OkResult();
+        }
+
+        [HttpGet("tournament/game/{gameId}/result")]
+        public IActionResult GetGameResult([FromRoute] string gameId)
+        {
+            var gameResult = this.dbContextWrapper.GetGame(gameId).GetResult();
+            return new OkObjectResult(gameResult);
+        }
     }
 }
