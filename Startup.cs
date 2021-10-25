@@ -4,9 +4,12 @@ namespace Wist
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.HttpsPolicy;
     using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Wist.Data;
+    using Wist.Models;
 
     public class Startup
     {
@@ -20,8 +23,14 @@ namespace Wist
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<WistDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddControllersWithViews();
+
+            services.AddTransient<IDbContextWrapper, DbContextWrapper>();
+            services.AddTransient<IModelFactory, ModelFactory>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

@@ -7,7 +7,7 @@
 
     public interface IModelFactory
     {
-        Game CreateGame(bool isFinal, List<Participant> participants, int amountOfGamesInTournament);
+        Game CreateGame(GameType type, List<Participant> participants, int amountOfGamesInTournament);
 
         List<Bet> CreateBets(List<Player> players, Dictionary<string, int> participantsResult);
     }

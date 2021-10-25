@@ -19,7 +19,27 @@
 
         public List<Round> Rounds { get; set; }
 
-        public bool IsFinal { get; set; }
+        public GameType Type { get; set; }
+
+        public Dictionary<string, int> GetResult()
+        {
+            var dict = new Dictionary<string, int>();
+            foreach(var player in this.Players)
+            {
+                dict.Add(player.Id, 0);
+            }
+
+            var rounds = this.Rounds.Where(r => r.IsDone);
+            foreach (var round in rounds)
+            { 
+                foreach(var bet in round.Bets)
+                {
+                    dict[bet.Player.Id] += bet.GetResult();
+                }
+            }
+
+            return dict;
+        }
 
         public Player GetDealer(Round round)
         {
@@ -30,6 +50,22 @@
             }
 
             return this.Players.First(p => p.GameRank == mod);
+        }
+
+        public int GetRank(string playerId)
+        {
+            var result = this.GetResult();
+            var ordered = result.OrderByDescending(r => r.Value);
+            var rank = 1;
+            foreach(var order in ordered)
+            {
+                if(order.Key == playerId)
+                {
+                    break;                    
+                }
+                rank++;
+            }
+            return rank;
         }
     }
 }

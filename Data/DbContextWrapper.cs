@@ -17,20 +17,20 @@
             this.modelFactory = modelFactory;
         }
 
-        public void CreateGame(List<string> participantsIds, bool isFinal, string tournamentId)
+        public void CreateGame(List<string> participantsIds, GameType type, string tournamentId)
         {
             var paticipants = this.GetParticipants(participantsIds);
             var amountOfGames = this.GetGames(tournamentId).Count;
-            var game = this.modelFactory.CreateGame(isFinal, paticipants, amountOfGames);
+            var game = this.modelFactory.CreateGame(type, paticipants, amountOfGames);
 
             this.dbContext.Games.Add(game);
             this.dbContext.SaveChanges();
         }
 
-        public void CreateTournament(string name, List<string> usersIds)
+        public Tournament CreateTournament(string name, List<string> usersIds)
         {
             var users = this.GetUsers(usersIds);
-            var particiapants = users.Select(u => new Participant() { User = u, TournamentPoints = 0 }).ToList();
+            var particiapants = users.Select(u => new Participant() { User = u }).ToList();
             var tournament = new Tournament()
             {
                 Name = name,
@@ -38,7 +38,17 @@
                 Participants = particiapants
             };
 
-            this.dbContext.Tournaments.Add(tournament);
+            var tournamentRecord = this.dbContext.Tournaments.Add(tournament);
+            this.dbContext.SaveChanges();
+
+            return tournamentRecord.Entity;
+        }
+
+        public void DeleteTournament(string tournamentId)
+        {
+            var tournament = this.dbContext.Tournaments.First(t => t.Id == tournamentId);
+            this.dbContext.Tournaments.Remove(tournament);
+
             this.dbContext.SaveChanges();
         }
 
@@ -55,7 +65,7 @@
         }
 
         public List<User> GetUsers()
-            => this.dbContext.WistUsers.ToList();
+            => this.dbContext.WistUsers.OrderByDescending(u => u.Points).ToList();
 
         public void SetRoundTipsResult(Dictionary<string, bool> participantsResult, string roundId)
         {
@@ -91,13 +101,38 @@
             this.dbContext.SaveChanges();
         }
 
+        public void UpdateTournament(Tournament tournament)
+        {
+            this.dbContext.Update(tournament);
+            this.dbContext.SaveChanges();
+        }
+
         public List<Tournament> GetTournaments()
             => this.dbContext.Tournaments.ToList();
 
         public Tournament GetTournament(string tournamentId)
             => this.dbContext.Tournaments.First(t => t.Id == tournamentId);
 
+        public void SetParticipantAsLeft(string tournamentId, string participantId)
+        {
+            var tournament = this.GetTournament(tournamentId);
+            var participant = tournament.Participants.First(p => p.Id == participantId);
+            participant.Left = true;
 
+            this.dbContext.Update(participant);
+            this.dbContext.SaveChanges();
+        }
+
+        public void AddParticipant(string tournamentId, string userId)
+        {
+            var tournament = this.GetTournament(tournamentId);
+            var user = this.GetUser(userId);
+
+            tournament.Participants.Add(new Participant() { User = user });
+            
+            this.dbContext.Update(tournament);
+            this.dbContext.SaveChanges();
+        }
         private List<Participant> GetParticipants(List<string> ids) 
             => this.dbContext.Participants.Where(p => ids.Contains(p.Id)).ToList();
 
@@ -118,5 +153,8 @@
 
         private List<Player> GetPlayers(List<string> ids)
             => this.dbContext.Players.Where(u => ids.Contains(u.Id)).ToList();
+
+        private User GetUser(string userId)
+            => this.dbContext.WistUsers.FirstOrDefault(u => u.Id == userId);
     }
 }

@@ -12,18 +12,26 @@
 
         List<User> GetUsers();
 
-        void CreateTournament(string name, List<string> usersIds);
+        Tournament CreateTournament(string name, List<string> usersIds);
+
+        void UpdateTournament(Tournament tournament);
 
         List<Tournament> GetTournaments();
 
         Tournament GetTournament(string tournamentId);
 
-        void CreateGame(List<string> participantsIds, bool isFinal, string tournamentId);
+        void CreateGame(List<string> participantsIds, GameType type, string tournamentId);
 
         void SetRoundTips(Dictionary<string, int> participantsTips, string roundId);
 
         void SetRoundTipsResult(Dictionary<string, bool> participantsResult, string roundId);
 
         void SetGameOrder(Dictionary<string, int> playersOrder, string gameId);
+
+        void DeleteTournament(string tournamentId);
+
+        void SetParticipantAsLeft(string tournamentId, string participantId);
+
+        void AddParticipant(string tournamentId, string userId);
     }
 }

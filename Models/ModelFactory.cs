@@ -25,13 +25,13 @@
             return bets;
         }
 
-        public Game CreateGame(bool isFinal, List<Participant> participants, int amountOfGamesInTournament)
+        public Game CreateGame(GameType type, List<Participant> participants, int amountOfGamesInTournament)
         {
             var rounds = this.CreateRounds();
 
             return new Game()
             {
-                IsFinal = isFinal,
+                Type = type,
                 Name = DateTime.Now.Date + "-" + ++amountOfGamesInTournament,
                 Players = participants.Select(p => new Player() { Participant = p }).ToList(),
                 Rounds = rounds

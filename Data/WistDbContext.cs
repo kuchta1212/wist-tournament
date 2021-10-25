@@ -27,6 +27,8 @@
 
         public DbSet<Player> Players { get; set; }
 
+        public DbSet<TournamentPoints> TournamentPoints { get; set; }
+
         public WistDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }

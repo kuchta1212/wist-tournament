@@ -15,7 +15,9 @@
 
         public User User { get; set; }
 
-        public int TournamentPoints { get; set; }
+        public TournamentPoints TournamentPoints { get; set; }
+
+        public bool Left { get; set; }
 
     }
 }
