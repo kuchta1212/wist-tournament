@@ -23,9 +23,33 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="wist-app\src\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="wist-app\src\**" />
+    <EmbeddedResource Remove="wist-app\src\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="wist-app\src\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="wist-app\src\components\api\Api.ts" />
+    <None Remove="wist-app\src\components\api\ApiFactory.ts" />
+    <None Remove="wist-app\src\components\api\HttpClient.ts" />
+    <None Remove="wist-app\src\components\api\IApi.ts" />
+    <None Remove="wist-app\src\components\api\ResponseConvertor.ts" />
+    <None Remove="wist-app\src\typings\Dictionary.ts" />
+    <None Remove="wist-app\src\typings\index.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="wist-app\src\components\api\Api.ts" />
+    <TypeScriptCompile Include="wist-app\src\components\api\ApiFactory.ts" />
+    <TypeScriptCompile Include="wist-app\src\components\api\HttpClient.ts" />
+    <TypeScriptCompile Include="wist-app\src\components\api\IApi.ts" />
+    <TypeScriptCompile Include="wist-app\src\components\api\ResponseConvertor.ts" />
+    <TypeScriptCompile Include="wist-app\src\typings\Dictionary.ts" />
+    <TypeScriptCompile Include="wist-app\src\typings\index.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

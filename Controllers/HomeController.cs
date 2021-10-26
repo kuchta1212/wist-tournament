@@ -124,15 +124,15 @@
             return new OkObjectResult(this.dbContextWrapper.GetTournaments());
         }
 
-        [HttpPost("tournament/participant/leave")]
-        public IActionResult ParticipantLeaves([FromQuery]string tournamentId, [FromQuery]string participantId)
+        [HttpDelete("tournament/{tournamentId}/participant/remove")]
+        public IActionResult RemoveParticipant([FromRoute]string tournamentId, [FromQuery]string participantId)
         {
             this.dbContextWrapper.SetParticipantAsLeft(tournamentId, participantId);
             return new OkResult();
         }
 
-        [HttpPost("tournament/participant/add")]
-        public IActionResult ParticipantAdd([FromQuery] string tournamentId, [FromQuery] string userId)
+        [HttpPost("tournament/{tournamentId}/participant/add")]
+        public IActionResult ParticipantAdd([FromRoute] string tournamentId, [FromQuery] string userId)
         {
             this.dbContextWrapper.AddParticipant(tournamentId, userId);
             return new OkResult();
@@ -146,8 +146,8 @@
             return new OkResult();
         }
 
-        [HttpGet("tournament/game")]
-        public IActionResult GetGame([FromQuery] string gameId)
+        [HttpGet("tournament/game/{gameId}")]
+        public IActionResult GetGame([FromRoute] string gameId)
         {
             var game = this.dbContextWrapper.GetGame(gameId);
             return new OkObjectResult(game);
