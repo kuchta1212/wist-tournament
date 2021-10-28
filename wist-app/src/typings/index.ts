@@ -3,7 +3,9 @@
     name: string;
     date: string;
     participants: Participant[];
+    winners: Participant[];
     games: Game[];
+    isDone: boolean;
 }
 
 export interface Game {

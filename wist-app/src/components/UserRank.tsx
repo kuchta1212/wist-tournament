@@ -5,10 +5,13 @@ import { Table } from 'reactstrap';
 import { Loader } from './Loader'
 
 interface RankProps {
+    clickable: boolean;
+    userSelected: (id: string, added: boolean) => void;
 }
 
 interface RankState {
     users: User[];
+    selectedUsers: string[];
     loading: boolean;
 }
 
@@ -18,8 +21,9 @@ export class Rank extends React.Component<RankProps, RankState> {
         super(props);
 
         this.state = {
-            users: {} as User[],
-            loading: true
+            users: [],
+            loading: true,
+            selectedUsers: [],
         };
     }
 
@@ -34,8 +38,8 @@ export class Rank extends React.Component<RankProps, RankState> {
             : this.renderRanking()
 
         return (
-            <div className="col-4 text-light">
-                <h1 id="tabelLabel" >Celkové pořadí</h1>
+            <div>
+                {this.props.clickable ? <h5 id="tabelLabel" >Vyber účastníky</h5> : <h1 id="tabelLabel" >Celkové pořadí</h1>}
                 {contents}
             </div>
         );
@@ -43,12 +47,12 @@ export class Rank extends React.Component<RankProps, RankState> {
 
     private renderRanking() {
         return (
-            <Table>
+            <Table className="text-light">
                 <thead>                    
                 </thead>
                 <tbody>
                     {this.state.users.map((user, index) => (
-                        <tr key={user.id}>
+                        <tr key={user.id} className={this.isUserSelected(user.id) ? "bg-success" : ""} onClick={() => this.onUserClick(user.id)}>
                             <td>{index + 1}. {user.name}</td>
                             <td>{user.points}</td>
                         </tr>)
@@ -56,5 +60,24 @@ export class Rank extends React.Component<RankProps, RankState> {
                 </tbody>
             </Table>
         );
+    }
+
+    private onUserClick(id: string) {
+        if (this.props.clickable) {
+            if (this.isUserSelected(id)) {
+                this.props.userSelected(id, false);
+                this.setState({ selectedUsers: this.state.selectedUsers.filter(function (selectedUser) {
+                        return selectedUser !== id
+                    })
+                });
+            } else {
+                this.props.userSelected(id, true);
+                this.setState({ selectedUsers: this.state.selectedUsers.concat([id]) });
+            }
+        }
+    }
+
+    private isUserSelected(id: string): boolean {
+        return this.state.selectedUsers.indexOf(id) > -1;
     }
 }

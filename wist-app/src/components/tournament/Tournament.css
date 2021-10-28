@@ -1,0 +1,25 @@
+﻿.tournament-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap
+}
+
+.tournament-box {
+    width: 18rem;
+    border-color: black;
+    border-width: 2px;
+}
+
+.new-icon {
+    height: 5vmin;
+    padding-top: 3px;
+}
+
+.podium-icon {
+    height: 10vmin;
+}
+
+.podium-winners {
+    /*transform: rotate(-45deg);*/
+    justify-content: flex-end;
+}

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wist.Data;
 
 namespace Wist.Migrations
 {
     [DbContext(typeof(WistDbContext))]
-    partial class WistDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211028184811_Participant-Column-Add-Left")]
+    partial class ParticipantColumnAddLeft
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

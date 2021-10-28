@@ -1,12 +1,13 @@
 import React from 'react';
-import { Layout } from './components/Layout'
+import { NavMenu } from './components/NavMenu'
 import { Main } from './components/Main'
 
 function App() {
     return (
-        <Layout>
+        <div className="App text-light">
+           <NavMenu />
            <Main />
-        </Layout>
+        </div>
   );
 }
 

@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import card from './card.svg';
+import card from './../images/card.svg';
 import './Loader.css';
 
 interface LoaderProps {
@@ -14,8 +14,8 @@ export class Loader extends React.Component<LoaderProps> {
 
     public render() {
         return (
-            <header className="App-header">
-                <img src={card} className="Loader-logo" alt="loader" />
-            </header>)
+            <div className="loader">
+                <img src={card} className="loader-logo" alt="loader" />
+            </div>)
     }
 }

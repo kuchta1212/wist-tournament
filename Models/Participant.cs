@@ -18,6 +18,5 @@
         public TournamentPoints TournamentPoints { get; set; }
 
         public bool Left { get; set; }
-
     }
 }

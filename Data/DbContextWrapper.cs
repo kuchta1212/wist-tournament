@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Wist.Models;
+    using Microsoft.EntityFrameworkCore;
 
     public class DbContextWrapper : IDbContextWrapper
     {
@@ -30,7 +31,7 @@
         public Tournament CreateTournament(string name, List<string> usersIds)
         {
             var users = this.GetUsers(usersIds);
-            var particiapants = users.Select(u => new Participant() { User = u }).ToList();
+            var particiapants = users.Select(u => new Participant() { User = u, TournamentPoints = new TournamentPoints() }).ToList();
             var tournament = new Tournament()
             {
                 Name = name,
@@ -111,10 +112,18 @@
         }
 
         public List<Tournament> GetTournaments()
-            => this.dbContext.Tournaments.ToList();
+            => this.dbContext.Tournaments
+            .Include(t => t.Participants)
+                .ThenInclude(p => p.User)
+            .Include(t => t.Participants)
+                .ThenInclude(p => p.TournamentPoints)
+            .ToList();
 
         public Tournament GetTournament(string tournamentId)
-            => this.dbContext.Tournaments.First(t => t.Id == tournamentId);
+            => this.dbContext.Tournaments
+            .Include(t => t.Participants)
+            .ThenInclude(p => p.User)
+            .First(t => t.Id == tournamentId);
 
         public void SetParticipantAsLeft(string tournamentId, string participantId)
         {
@@ -138,25 +147,38 @@
         }
 
         public Game GetGame(string gameId)
-            => this.dbContext.Games.FirstOrDefault(r => r.Id == gameId);
+            => this.dbContext.Games
+            .Include(g => g.Players)
+            .Include(g => g.Rounds)
+            .FirstOrDefault(r => r.Id == gameId);
 
         private List<Participant> GetParticipants(List<string> ids) 
-            => this.dbContext.Participants.Where(p => ids.Contains(p.Id)).ToList();
+            => this.dbContext.Participants
+            .Include(p => p.User)
+            .Include(p => p.TournamentPoints)
+            .Where(p => ids.Contains(p.Id)).ToList();
 
         private List<Game> GetGames(string tournamentId)
-            => this.dbContext.Games.ToList();
+            => this.dbContext.Games
+            .Include(g => g.Players)
+            .Include(g => g.Rounds)
+            .ToList();
 
         private List<User> GetUsers(List<string> ids)
             => this.dbContext.WistUsers.Where(u => ids.Contains(u.Id)).ToList();
 
         private Round GetRound(string roundId)
-            => this.dbContext.Rounds.FirstOrDefault(r => r.Id == roundId);
+            => this.dbContext.Rounds
+            .Include(r => r.Bets)
+            .FirstOrDefault(r => r.Id == roundId);
 
         private List<Bet> GetBets(string roundId)
             => this.GetRound(roundId).Bets;
 
         private List<Player> GetPlayers(List<string> ids)
-            => this.dbContext.Players.Where(u => ids.Contains(u.Id)).ToList();
+            => this.dbContext.Players
+            .Include(p => p.Participant)
+            .Where(u => ids.Contains(u.Id)).ToList();
 
         private User GetUser(string userId)
             => this.dbContext.WistUsers.FirstOrDefault(u => u.Id == userId);

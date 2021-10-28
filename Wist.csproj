@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -38,10 +38,13 @@
     <None Remove="wist-app\src\components\api\HttpClient.ts" />
     <None Remove="wist-app\src\components\api\IApi.ts" />
     <None Remove="wist-app\src\components\api\ResponseConvertor.ts" />
-    <None Remove="wist-app\src\components\card.svg" />
     <None Remove="wist-app\src\components\Loader.tsx" />
     <None Remove="wist-app\src\components\Main.tsx" />
+    <None Remove="wist-app\src\components\tournament\TournamentBox.tsx" />
+    <None Remove="wist-app\src\components\tournament\TournamentList.tsx" />
+    <None Remove="wist-app\src\components\tournament\TournamentModal.tsx" />
     <None Remove="wist-app\src\components\UserRank.tsx" />
+    <None Remove="wist-app\src\images\card.svg" />
     <None Remove="wist-app\src\typings\Dictionary.ts" />
     <None Remove="wist-app\src\typings\index.ts" />
   </ItemGroup>
@@ -52,16 +55,17 @@
     <TypeScriptCompile Include="wist-app\src\components\api\HttpClient.ts" />
     <TypeScriptCompile Include="wist-app\src\components\api\IApi.ts" />
     <TypeScriptCompile Include="wist-app\src\components\api\ResponseConvertor.ts" />
-    <TypeScriptCompile Include="wist-app\src\components\card.svg" />
     <TypeScriptCompile Include="wist-app\src\components\Loader.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\Main.tsx" />
+    <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentBox.tsx" />
+    <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentList.tsx" />
+    <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentModal.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\UserRank.tsx" />
+    <TypeScriptCompile Include="wist-app\src\images\card.svg">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="wist-app\src\typings\Dictionary.ts" />
     <TypeScriptCompile Include="wist-app\src\typings\index.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wist-app\src\components\tournament\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

@@ -121,7 +121,7 @@
         [HttpGet("tournaments")]
         public IActionResult GetTournaments()
         {
-            return new OkObjectResult(this.dbContextWrapper.GetTournaments());
+            return new OkObjectResult(this.dbContextWrapper.GetTournaments().Select(t => t.ToLiteMode()));
         }
 
         [HttpDelete("tournament/{tournamentId}/participant/remove")]

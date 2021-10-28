@@ -20,5 +20,16 @@
         public List<Participant> Participants { get; set; }
 
         public List<Game> Games { get; set; }
+
+        public TournamentLite ToLiteMode()
+        {
+            return new TournamentLite()
+            {
+                Id = this.Id,
+                Name = this.Name,
+                Date = this.Date,
+                Winners = this.Participants.OrderByDescending(p => p.TournamentPoints).Take(3).ToList()
+            };
+        }
     }
 }

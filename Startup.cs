@@ -10,6 +10,7 @@ namespace Wist
     using Microsoft.Extensions.Hosting;
     using Wist.Data;
     using Wist.Models;
+    using Wist.Utils;
 
     public class Startup
     {
@@ -31,6 +32,7 @@ namespace Wist
 
             services.AddTransient<IDbContextWrapper, DbContextWrapper>();
             services.AddTransient<IModelFactory, ModelFactory>();
+            services.AddTransient<IUtils, Utils.Utils>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
