@@ -63,15 +63,13 @@ export class TournamentBox extends React.Component<TournamentBoxProps, Tournamen
                     </div>
                     <img className="card-img-bottom podium-icon" src={podium} alt="Nový turnaj" />
                 </div>
-                <Collapse isOpened={this.state.showTournamentPage}>
-                    <TournamentControlPanel tournament={this.props.tournament} />
-                </Collapse >
+                {this.state.showTournamentPage ? <TournamentPage tournamentId={this.props.tournament.id} /> : null}
+
+            {/*    <Collapse isOpened={this.state.showTournamentPage}>*/}
+            {/*        <TournamentPage tournamentId={this.props.tournament.id} />*/}
+            {/*    </Collapse >*/}
             </div>
         );
-    }
-
-    private getId() {
-        return "collapseExample" + this.props.tournament.id
     }
 
     private renderTopThree() {

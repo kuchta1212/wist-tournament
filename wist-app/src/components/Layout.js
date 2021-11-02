@@ -15,19 +15,21 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GameList = void 0;
+exports.Layout = void 0;
 var React = require("react");
-var GameBox_1 = require("./GameBox");
-require("./Game.css");
-var GameList = /** @class */ (function (_super) {
-    __extends(GameList, _super);
-    function GameList(props) {
-        return _super.call(this, props) || this;
+var reactstrap_1 = require("reactstrap");
+var NavMenu_1 = require("./NavMenu");
+var Layout = /** @class */ (function (_super) {
+    __extends(Layout, _super);
+    function Layout() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    GameList.prototype.render = function () {
-        return (React.createElement("div", { className: "game-list text-light" }, this.props.games.map(function (game, index) { return (React.createElement(GameBox_1.GameBox, { game: game })); })));
+    Layout.prototype.render = function () {
+        return (React.createElement("div", null,
+            React.createElement(NavMenu_1.NavMenu, null),
+            React.createElement(reactstrap_1.Container, null, this.props.children)));
     };
-    return GameList;
+    return Layout;
 }(React.Component));
-exports.GameList = GameList;
-//# sourceMappingURL=GameList.js.map
+exports.Layout = Layout;
+//# sourceMappingURL=Layout.js.map

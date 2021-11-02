@@ -123,6 +123,12 @@
             => this.dbContext.Tournaments
             .Include(t => t.Participants)
             .ThenInclude(p => p.User)
+            .Include(t => t.Games)
+            .ThenInclude(g => g.Rounds)
+            .Include(t => t.Games)
+            .ThenInclude(g => g.Players)
+            .ThenInclude(p => p.Participant)
+            .ThenInclude(p => p.User)
             .First(t => t.Id == tournamentId);
 
         public void SetParticipantAsLeft(string tournamentId, string participantId)

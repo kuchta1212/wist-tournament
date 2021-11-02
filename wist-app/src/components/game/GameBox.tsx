@@ -1,7 +1,5 @@
 ﻿import * as React from 'react';
-import { Game } from "../../typings/index"
-import newIcon from './../../images/new.svg';
-import podium from './../../images/podium.svg'
+import { Game, GameType } from "../../typings/index"
 
 interface GameBoxProps {
     game: Game;
@@ -18,12 +16,11 @@ export class GameBox extends React.Component<GameBoxProps, GameBoxState> {
 
     public render() {
         return (
-            <div className="card tournament-box bg-secondary">
+            <div className="card game-box bg-info" onClick={() => this.openGame()}>
                 <div className="card-body">
-                    <h5 className="card-title text-dark">{this.props.game.name}</h5>
-                    <h6 className="card-subtitle mb-2 text-dark">{this.props.game.type}</h6>
-                    <h6>{this.props.game.rounds.filter(round => round.isDone).length}/16</h6>
+                    <h6 className="card-subtitle mb-2 text-dark">{this.gameTypeToText(this.props.game.type)}</h6>
                     {this.renderPlayers()}
+                    <h6>Odehráno: {this.props.game.rounds.filter(round => round.isDone).length}/16</h6>
                 </div>
             </div>
         );
@@ -31,11 +28,28 @@ export class GameBox extends React.Component<GameBoxProps, GameBoxState> {
 
     private renderPlayers() {
         return (
-            <div>
+            <p>
                 {this.props.game.players.map((player, index) => (
-                    <p>{player.participant.user.name}</p>
+                    player.participant.user.name + " "
                 ))}
-            </div>
+            </p>
         )
+    }
+
+    private gameTypeToText(gameType: GameType) {
+        switch (gameType) {
+            case GameType.FirstRound:
+                return "První kolo";
+            case GameType.SecondRound:
+                return "Druhé kolo";
+            case GameType.ThirdRound:
+                return "Třetí kolo";
+            case GameType.FinalRound:
+                return "Finálové kolo";
+        }
+    }
+
+    private openGame() {
+
     }
  }

@@ -29,7 +29,12 @@
     cursor: pointer;
 }
 
+.tournament-page {
+    background-color: darkgrey;
+    border: 3px;
+    border-color: black;
+}
+
 .tournament-control-panel {
-/*    justify-content: space-between;
-    width: 1200px*/
+    justify-content: space-between;
 }

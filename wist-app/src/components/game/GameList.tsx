@@ -16,14 +16,10 @@ export class GameList extends React.Component<GameListProps, GameListState> {
 
     constructor(props: GameListProps) {
         super(props);
-
-        this.state = {
-        };
     }
 
 
     public render() {
-
         return (
             <div className="game-list text-light">
                 {

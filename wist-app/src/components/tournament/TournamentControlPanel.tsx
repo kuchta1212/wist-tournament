@@ -25,11 +25,24 @@ export class TournamentControlPanel extends React.Component<TournamentControlPan
     public render() {
         return (
             <div className="row">
-                <button type="button" className="btn" onClick={() => this.createNextRound()}>Další kolo</button>
-                <button type="button" className="btn" onClick={() => this.createFinalRound()}>Finální kolo</button>
-                <button type="button" className="btn" onClick={() => this.delete()}>Smazat</button>
-                <button type="button" className="btn" onClick={() => this.addParticipant()}>Přidat účastníka</button>
-                <button type="button" className="btn" onClick={() => this.removeParticipant()}>Odebrat účastníka</button>
+                <div className="col">
+                    <button type="button" className="btn btn-secondary" onClick={() => this.createNextRound()}>Další kolo</button>
+                </div>
+                <div className="col">
+                    <button type="button" className="btn btn-secondary" onClick={() => this.createFinalRound()}>Finální kolo</button>
+                </div>
+                <div className="col">
+                    <button type="button" className="btn btn-secondary" onClick={() => this.delete()}>Smazat</button>
+                </div>
+                <div className="col">
+                    <button type="button" className="btn btn-secondary" onClick={() => this.addParticipant()}>Přidat účastníka</button>
+                </div>
+                <div className="col">
+                    <button type="button" className="btn btn-secondary" onClick={() => this.removeParticipant()}>Odebrat účastníka</button>
+                </div>
+                <div className="col">
+                    <button type="button" className="btn btn-success" onClick={() => this.removeParticipant()}>LIVE</button>
+                </div>
             </div>
         );
     }

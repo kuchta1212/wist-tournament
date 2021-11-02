@@ -1,2 +1,9 @@
-﻿body {
+﻿.game-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.game-box {
+
 }

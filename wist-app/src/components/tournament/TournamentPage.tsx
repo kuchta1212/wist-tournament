@@ -38,7 +38,7 @@ export class TournamentPage extends React.Component<TournamentPageProps, Tournam
             : <GameList games={!!this.state.tournament.games ? this.state.tournament.games : []} />
 
         return (
-            <div className="col text-light">
+            <div className="tournament-page text-light">
                 <TournamentControlPanel tournament={this.state.tournament} />
                 {contents}
             </div>
