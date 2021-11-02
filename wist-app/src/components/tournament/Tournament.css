@@ -23,3 +23,13 @@
     /*transform: rotate(-45deg);*/
     justify-content: flex-end;
 }
+
+.tournament-box:hover {
+    border-color: red;
+    cursor: pointer;
+}
+
+.tournament-control-panel {
+/*    justify-content: space-between;
+    width: 1200px*/
+}

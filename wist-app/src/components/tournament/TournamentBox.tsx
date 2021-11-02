@@ -3,6 +3,9 @@ import { Tournament } from "../../typings/index"
 import newIcon from './../../images/new.svg';
 import podium from './../../images/podium.svg'
 import { TournamentModal } from './TournamentModal'
+import { TournamentPage } from './TournamentPage';
+import { TournamentControlPanel } from './TournamentControlPanel';
+import { Collapse } from 'react-collapse'
 
 interface TournamentBoxProps {
     tournament: Tournament;
@@ -11,7 +14,8 @@ interface TournamentBoxProps {
 }
 
 interface TournamentBoxState {
-    showModal: boolean
+    showNewForm: boolean
+    showTournamentPage: boolean;
 }
 
 export class TournamentBox extends React.Component<TournamentBoxProps, TournamentBoxState> {
@@ -20,7 +24,8 @@ export class TournamentBox extends React.Component<TournamentBoxProps, Tournamen
         super(props);
 
         this.state = {
-            showModal: false
+            showNewForm: false,
+            showTournamentPage: false,
         }
     }
 
@@ -42,22 +47,31 @@ export class TournamentBox extends React.Component<TournamentBoxProps, Tournamen
                 <div className="card tournament-box bg-secondary" onClick={() => this.clickOnNewBox()}>
                     <img className="card-img-top new-icon" src={newIcon} alt="Nový turnaj" />
                 </div>
-                {this.state.showModal ? <TournamentModal close={this.closeModal.bind(this)} add={this.props.tournamentAdded.bind(this)} /> : null}
+                {this.state.showNewForm ? <TournamentModal close={this.closeModal.bind(this)} add={this.props.tournamentAdded.bind(this)} /> : null}
             </div>
         );
     }
 
     private renderTournamentBox() {
         return (
-            <div className="card tournament-box bg-secondary">
-                <div className="card-body">
-                    <h5 className="card-title text-dark">{this.props.tournament.name}</h5>
-                    <h6 className="card-subtitle mb-2 text-dark">{this.props.tournament.date}</h6>
-                    { this.renderTopThree()}
+            <div>
+                <div className="card tournament-box bg-secondary" onClick={() => this.clickOnBox()}>
+                    <div className="card-body">
+                        <h5 className="card-title text-dark">{this.props.tournament.name}</h5>
+                        <h6 className="card-subtitle mb-2 text-dark">{this.props.tournament.date}</h6>
+                        { this.renderTopThree()}
+                    </div>
+                    <img className="card-img-bottom podium-icon" src={podium} alt="Nový turnaj" />
                 </div>
-                <img className="card-img-bottom podium-icon" src={podium} alt="Nový turnaj" />
+                <Collapse isOpened={this.state.showTournamentPage}>
+                    <TournamentControlPanel tournament={this.props.tournament} />
+                </Collapse >
             </div>
         );
+    }
+
+    private getId() {
+        return "collapseExample" + this.props.tournament.id
     }
 
     private renderTopThree() {
@@ -71,10 +85,14 @@ export class TournamentBox extends React.Component<TournamentBoxProps, Tournamen
     }
 
     private closeModal() {
-        this.setState({ showModal: false });
+        this.setState({ showNewForm: false });
     }
 
     private clickOnNewBox() {
-        this.setState({ showModal: !this.state.showModal });
+        this.setState({ showNewForm: !this.state.showNewForm });
+    }
+
+    private clickOnBox() {
+        this.setState({ showTournamentPage: !this.state.showTournamentPage });
     }
 }
