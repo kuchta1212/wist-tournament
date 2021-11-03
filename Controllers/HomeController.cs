@@ -140,9 +140,9 @@
 
 
         [HttpPost("tournament/game/{gameId}/order")]
-        public IActionResult SetGameOrder([FromBody] Dictionary<string, int> order, [FromRoute]string gameId)
+        public IActionResult SetGameOrder([FromBody] Dictionary<string, int> hashMap, [FromRoute]string gameId)
         {
-            this.dbContextWrapper.SetGameOrder(order, gameId);
+            this.dbContextWrapper.SetGameOrder(hashMap, gameId);
             return new OkResult();
         }
 
@@ -154,16 +154,16 @@
         }
 
         [HttpPost("tournament/game/round/{roundId}/bets")]
-        public IActionResult SetBets([FromRoute] string roundId, [FromBody] Dictionary<string, int> bets)
+        public IActionResult SetBets([FromRoute] string roundId, [FromBody] Dictionary<string, int> hashMap)
         {
-            this.dbContextWrapper.SetRoundBets(bets, roundId);
+            this.dbContextWrapper.SetRoundBets(hashMap, roundId);
             return new OkResult();
         }
 
         [HttpPost("tournament/game/round/{roundId}/bets/results")]
-        public IActionResult SetBetsResult([FromRoute] string roundId, [FromBody] Dictionary<string, bool> results)
+        public IActionResult SetBetsResult([FromRoute] string roundId, [FromBody] Dictionary<string, bool> hashMap)
         {
-            this.dbContextWrapper.SetRoundBetsResult(results, roundId);
+            this.dbContextWrapper.SetRoundBetsResult(hashMap, roundId);
             return new OkResult();
         }
 
@@ -172,6 +172,13 @@
         {
             var gameResult = this.dbContextWrapper.GetGame(gameId).GetResult();
             return new OkObjectResult(gameResult);
+        }
+
+        [HttpGet("tournament/game/round/{roundId}")]
+        public IActionResult GetRound([FromRoute] string roundId)
+        {
+            var round = this.dbContextWrapper.GetRound(roundId);
+            return new OkObjectResult(round);
         }
     }
 }

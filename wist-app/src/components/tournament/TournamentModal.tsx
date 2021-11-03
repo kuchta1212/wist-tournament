@@ -71,9 +71,8 @@ export class TournamentModal extends React.Component<TournamentModalProps, Tourn
         }
     }
 
-    private async createTournament() {
-        if (this.state.name === "")
-        {
+    private createTournament() {
+        if (this.state.name === "") {
             alert("Vyplň jméno");
             return;
         }
@@ -84,9 +83,10 @@ export class TournamentModal extends React.Component<TournamentModalProps, Tourn
         }
 
         this.setState({ send: true });
-        await getApi().createTournament(this.state.name, this.state.selectedUsers);
-        alert("done");
-        this.props.add();
+        getApi().createTournament(this.state.name, this.state.selectedUsers).then(() => {
+            alert("done");
+            this.props.add();
+        });
     }
 
     private setTournamentName(name: string) {

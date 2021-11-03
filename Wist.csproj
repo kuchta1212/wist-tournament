@@ -38,13 +38,20 @@
     <None Remove="wist-app\src\components\api\HttpClient.ts" />
     <None Remove="wist-app\src\components\api\IApi.ts" />
     <None Remove="wist-app\src\components\api\ResponseConvertor.ts" />
+    <None Remove="wist-app\src\components\game\BetCell.tsx" />
     <None Remove="wist-app\src\components\game\GameBox.tsx" />
     <None Remove="wist-app\src\components\game\GameList.tsx" />
+    <None Remove="wist-app\src\components\game\GameLive.tsx" />
+    <None Remove="wist-app\src\components\game\GameOrder.tsx" />
+    <None Remove="wist-app\src\components\game\GameTable.tsx" />
+    <None Remove="wist-app\src\components\game\RoundRow.tsx" />
+    <None Remove="wist-app\src\components\Layout.tsx" />
     <None Remove="wist-app\src\components\Loader.tsx" />
     <None Remove="wist-app\src\components\Main.tsx" />
     <None Remove="wist-app\src\components\tournament\TournamentBox.tsx" />
     <None Remove="wist-app\src\components\tournament\TournamentControlPanel.tsx" />
     <None Remove="wist-app\src\components\tournament\TournamentList.tsx" />
+    <None Remove="wist-app\src\components\tournament\TournamentLive.tsx" />
     <None Remove="wist-app\src\components\tournament\TournamentModal.tsx" />
     <None Remove="wist-app\src\components\tournament\TournamentPage.tsx" />
     <None Remove="wist-app\src\components\UserRank.tsx" />
@@ -59,13 +66,20 @@
     <TypeScriptCompile Include="wist-app\src\components\api\HttpClient.ts" />
     <TypeScriptCompile Include="wist-app\src\components\api\IApi.ts" />
     <TypeScriptCompile Include="wist-app\src\components\api\ResponseConvertor.ts" />
+    <TypeScriptCompile Include="wist-app\src\components\game\BetCell.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\game\GameBox.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\game\GameList.tsx" />
+    <TypeScriptCompile Include="wist-app\src\components\game\GameLive.tsx" />
+    <TypeScriptCompile Include="wist-app\src\components\game\GameOrder.tsx" />
+    <TypeScriptCompile Include="wist-app\src\components\game\GameTable.tsx" />
+    <TypeScriptCompile Include="wist-app\src\components\game\RoundRow.tsx" />
+    <TypeScriptCompile Include="wist-app\src\components\Layout.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\Loader.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\Main.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentBox.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentControlPanel.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentList.tsx" />
+    <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentLive.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentModal.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentPage.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\UserRank.tsx" />
@@ -101,5 +115,21 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES2015</TypeScriptTarget>
+    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
+    <TypeScriptModuleKind>ES6</TypeScriptModuleKind>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
 
 </Project>

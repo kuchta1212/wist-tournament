@@ -1,7 +1,5 @@
 ﻿import * as React from 'react';
 import { Tournament } from "../../typings/index"
-import newIcon from './../../images/new.svg';
-import podium from './../../images/podium.svg';
 import { getApi } from './../api/ApiFactory';
 import { Loader } from './../Loader'
 import { TournamentControlPanel } from './TournamentControlPanel'
@@ -39,9 +37,13 @@ export class TournamentPage extends React.Component<TournamentPageProps, Tournam
 
         return (
             <div className="tournament-page text-light">
-                <TournamentControlPanel tournament={this.state.tournament} />
+                <TournamentControlPanel tournament={this.state.tournament} reload={this.reload.bind(this)}/>
                 {contents}
             </div>
         );
+    }
+
+    private reload() {
+        this.setState({ loading: true });
     }
 }

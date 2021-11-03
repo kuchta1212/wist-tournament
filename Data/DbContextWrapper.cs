@@ -68,12 +68,12 @@
         public List<User> GetUsers()
             => this.dbContext.WistUsers.OrderByDescending(u => u.Points).ToList();
 
-        public void SetRoundBetsResult(Dictionary<string, bool> playersResults, string roundId)
+        public void SetRoundBetsResult(Dictionary<string, bool> betsResults, string roundId)
         {
             var round = this.GetRound(roundId);
             foreach(var bet in round.Bets)
             {
-                bet.IsSuccess = playersResults[bet.Player.Id];
+                bet.IsSuccess = betsResults[bet.Id];
             }
             round.IsDone = true;
 
@@ -155,8 +155,19 @@
         public Game GetGame(string gameId)
             => this.dbContext.Games
             .Include(g => g.Players)
+                .ThenInclude(p => p.Participant)
+                    .ThenInclude(p => p.User)
             .Include(g => g.Rounds)
+                .ThenInclude(r => r.Bets)
             .FirstOrDefault(r => r.Id == gameId);
+
+        public Round GetRound(string roundId)
+            => this.dbContext.Rounds
+            .Include(r => r.Bets)
+                .ThenInclude(b => b.Player)
+                    .ThenInclude(p => p.Participant)
+                        .ThenInclude(p => p.User)
+            .FirstOrDefault(r => r.Id == roundId);
 
         private List<Participant> GetParticipants(List<string> ids) 
             => this.dbContext.Participants
@@ -173,10 +184,7 @@
         private List<User> GetUsers(List<string> ids)
             => this.dbContext.WistUsers.Where(u => ids.Contains(u.Id)).ToList();
 
-        private Round GetRound(string roundId)
-            => this.dbContext.Rounds
-            .Include(r => r.Bets)
-            .FirstOrDefault(r => r.Id == roundId);
+
 
         private List<Bet> GetBets(string roundId)
             => this.GetRound(roundId).Bets;

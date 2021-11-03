@@ -1,4 +1,5 @@
 ﻿import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { Game, GameType } from "../../typings/index"
 
 interface GameBoxProps {
@@ -16,13 +17,15 @@ export class GameBox extends React.Component<GameBoxProps, GameBoxState> {
 
     public render() {
         return (
-            <div className="card game-box bg-info" onClick={() => this.openGame()}>
-                <div className="card-body">
-                    <h6 className="card-subtitle mb-2 text-dark">{this.gameTypeToText(this.props.game.type)}</h6>
-                    {this.renderPlayers()}
-                    <h6>Odehráno: {this.props.game.rounds.filter(round => round.isDone).length}/16</h6>
+            <Link to={`/game-live/${this.props.game.id}`}>
+                <div className="card game-box bg-info">
+                    <div className="card-body">
+                        <h6 className="card-subtitle mb-2 text-dark">{this.gameTypeToText(this.props.game.type)}</h6>
+                        {this.renderPlayers()}
+                        <h6>Odehráno: {this.props.game.rounds.filter(round => round.isDone).length}/16</h6>
+                    </div>
                 </div>
-            </div>
+            </Link>
         );
     }
 
@@ -47,9 +50,5 @@ export class GameBox extends React.Component<GameBoxProps, GameBoxState> {
             case GameType.FinalRound:
                 return "Finálové kolo";
         }
-    }
-
-    private openGame() {
-
     }
  }

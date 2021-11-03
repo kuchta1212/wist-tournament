@@ -5,6 +5,7 @@
     getKeys(): string[];
     getValues(): TValue[];
     contains(key: string): boolean;
+    getHashMap(): any;
 
 }
 
@@ -46,6 +47,10 @@ export class Dictionary<TValue> implements IDictionary<TValue>{
     contains(key: string): boolean {
         let value = this.get(key);
         return !!value;
+    }
+
+    getHashMap(): any {
+        return this.hashMap;
     }
 
     static convert<TValue>(object: any): IDictionary<TValue> {

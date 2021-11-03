@@ -3,10 +3,12 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Game } from "../../typings/index"
 import { getApi } from './../api/ApiFactory';
 import { Loader } from './../Loader'
-import { GameList } from './GameList'
+import { GameOrder } from './GameOrder'
+import { GameTable } from './GameTable'
 
 interface GameLiveState {
-    gameId: string;
+    game: Game;
+    loading: boolean;
 }
 
 interface GameParams {
@@ -19,24 +21,40 @@ export class GameLive extends React.Component<RouteComponentProps<GameParams>, G
         super(props);
 
         this.state = {
-            gameId: this.props.match.params.gameId
+            game: {} as Game,
+            loading: true
         }
     }
 
-    public async componentDidMount() {
-        //const tournament = await getApi().getTournament(this.props.tournamentId);
-        //this.setState({ tournament: tournament, loading: false });
+    public componentDidMount() {
+        this.getData();
     }
 
     public render() {
-        //let contents = this.state.loading
-        //    ? <Loader />
-        //    : <GameList games={!!this.state.tournament.games ? this.state.tournament.games : []} />
+        let contents = this.state.loading
+            ? <Loader />
+            : this.didGameStarted()
+                ? <GameTable game={this.state.game} />
+                : <GameOrder players={this.state.game.players} gameId={this.state.game.id} reload={this.reload.bind(this)} />
 
         return (
-            <div className="tournament-page text-light">
-                <p>Hello from game live {this.state.gameId}</p>
+            <div className="game-live text-light">
+                {contents}
             </div>
         );
+    }
+
+    private didGameStarted(): boolean {
+        return this.state.game.players.filter(p => p.gameRank != 0).length != 0;
+    }
+
+    private async getData() {
+        const game = await getApi().getGame(this.props.match.params.gameId);
+        this.setState({ game: game, loading: false });
+    }
+
+    private reload() {
+        this.setState({ loading: true });
+        this.getData();
     }
 }

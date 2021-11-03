@@ -45,7 +45,7 @@ export class TournamentList extends React.Component<TournamentListProps, Tournam
         return (
             <div className="tournament-list">
                 {this.state.tournaments.map((tournament, index) => (
-                    <TournamentBox tournament={tournament} isNew={false} tournamentAdded={() => { return;}}/>
+                    <TournamentBox key={tournament.id} tournament={tournament} isNew={false} tournamentAdded={() => { return;}}/>
                 ))}
                 <TournamentBox tournament={{} as Tournament} isNew={true} tournamentAdded={this.tournamentAdded.bind(this)} />
             </div>

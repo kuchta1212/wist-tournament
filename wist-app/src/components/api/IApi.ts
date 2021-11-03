@@ -1,5 +1,6 @@
 ﻿import { User, Tournament, Game } from "../../typings";
-import { Dictionary } from "../../typings/Dictionary"
+import { IDictionary } from "../../typings/Dictionary"
+import { Round } from "../../typings/index";
 
 export interface IApi {
     getUsers(): Promise<User[]>;
@@ -12,9 +13,10 @@ export interface IApi {
     getTournaments(): Promise<Tournament[]>;
     removeParticipant(tournamentId: string, userId: string): Promise<void>;
     addParticipant(tournamentId: string, userId: string): Promise<void>;
-    setGameOrder(order: Dictionary<number>, gameId: string): Promise<void>;
+    setGameOrder(order: IDictionary<number>, gameId: string): Promise<void>;
     getGame(gameId: string): Promise<Game>;
-    setBets(roundId: string, bets: Dictionary<number>): Promise<void>;
-    setBetsResult(roundId: string, betsResults: Dictionary<boolean>): Promise<void>;
-    getGameResults(gameId: string): Promise<Dictionary<number>>;
+    setBets(roundId: string, bets: IDictionary<number>): Promise<void>;
+    setBetsResult(roundId: string, betsResults: IDictionary<boolean>): Promise<void>;
+    getGameResults(gameId: string): Promise<IDictionary<number>>;
+    getRound(roundId: string): Promise<Round>;
 }

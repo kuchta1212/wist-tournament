@@ -64,10 +64,6 @@ export class TournamentBox extends React.Component<TournamentBoxProps, Tournamen
                     <img className="card-img-bottom podium-icon" src={podium} alt="Nový turnaj" />
                 </div>
                 {this.state.showTournamentPage ? <TournamentPage tournamentId={this.props.tournament.id} /> : null}
-
-            {/*    <Collapse isOpened={this.state.showTournamentPage}>*/}
-            {/*        <TournamentPage tournamentId={this.props.tournament.id} />*/}
-            {/*    </Collapse >*/}
             </div>
         );
     }
@@ -76,7 +72,7 @@ export class TournamentBox extends React.Component<TournamentBoxProps, Tournamen
         return (
             <div>
                 {this.props.tournament.winners.map((winner, index) => (
-                    <p className="podium-winners">{winner.user.name}</p>
+                    <p key={winner.id} className="podium-winners">{winner.user.name}</p>
                 ))}
             </div>
         )

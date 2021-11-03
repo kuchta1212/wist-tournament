@@ -35,5 +35,7 @@
         void AddParticipant(string tournamentId, string userId);
 
         Game GetGame(string gameId);
+
+        Round GetRound(string roundId);
     }
 }

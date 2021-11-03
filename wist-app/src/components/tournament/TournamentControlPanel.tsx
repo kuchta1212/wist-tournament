@@ -1,10 +1,13 @@
-﻿import * as React from 'react';
+﻿import { get } from 'https';
+import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { Tournament } from '../../typings';
 import { getApi } from "./../api/ApiFactory"
 import { Rank } from './../UserRank'
 
 interface TournamentControlPanelProps {
     tournament: Tournament
+    reload: () => void;
 }
 
 interface TournamentControlPanelState {
@@ -41,29 +44,34 @@ export class TournamentControlPanel extends React.Component<TournamentControlPan
                     <button type="button" className="btn btn-secondary" onClick={() => this.removeParticipant()}>Odebrat účastníka</button>
                 </div>
                 <div className="col">
-                    <button type="button" className="btn btn-success" onClick={() => this.removeParticipant()}>LIVE</button>
+                    <Link to={`/tournament-live/${this.props.tournament.id}`}>
+                        <button type="button" className="btn btn-success">LIVE</button>
+                    </Link>
                 </div>
             </div>
         );
     }
 
     private createNextRound() {
-
+        getApi().createNextRound(this.props.tournament.id);
+        this.props.reload();
     }
 
     private createFinalRound() {
-
+        getApi().createFinalRound(this.props.tournament.id)
+        this.props.reload();
     }
 
     private delete() {
-
+        getApi().deleteTournament(this.props.tournament.id)
+        this.props.reload();
     }
 
     private addParticipant() {
-
+        alert("Nefunguje");
     }
 
     private removeParticipant() {
-
+        alert("Nefunguje");
     }
 }
