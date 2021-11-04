@@ -9,7 +9,7 @@ const API_URL = '/api';
 
 export class Api implements IApi {
     getRound(roundId: string): Promise<Round> {
-        return convert<Round>(get(`${API_URL}/rounds/${roundId}`));
+        return convert<Round>(get(`${API_URL}/tournament/game/round/${roundId}`));
     }
     getUsers(): Promise<User[]> {
         return convert<User[]>(get(`${API_URL}/users`));

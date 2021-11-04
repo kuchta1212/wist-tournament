@@ -14,6 +14,7 @@ export interface Game {
     players: Player[];
     rounds: Round[];
     type: GameType;
+    status: GameStatus;
 }
 
 export enum GameType {
@@ -42,7 +43,7 @@ export interface Round {
     dealerNumber: number;
     amountOfCards: number;
     bets: Bet[];
-    isDone: boolean;
+    status: RoundStatus
 }
 
 export interface TournamentPoints {
@@ -64,5 +65,24 @@ export interface Bet {
     tip: number;
     isSuccess: boolean;
     player: Player;
+    status: BetStatus;
+}
+
+export enum RoundStatus {
+    notStarted,
+    betsAreSet,
+    done
+}
+
+export enum GameStatus {
+    notStarted,
+    started,
+    finished
+}
+
+export enum BetStatus {
+    notSet,
+    set,
+    withResult
 }
 

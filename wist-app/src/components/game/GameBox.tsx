@@ -1,6 +1,6 @@
 ﻿import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { Game, GameType } from "../../typings/index"
+import { Game, GameType, RoundStatus } from "../../typings/index"
 
 interface GameBoxProps {
     game: Game;
@@ -22,7 +22,7 @@ export class GameBox extends React.Component<GameBoxProps, GameBoxState> {
                     <div className="card-body">
                         <h6 className="card-subtitle mb-2 text-dark">{this.gameTypeToText(this.props.game.type)}</h6>
                         {this.renderPlayers()}
-                        <h6>Odehráno: {this.props.game.rounds.filter(round => round.isDone).length}/16</h6>
+                        <h6>Odehráno: {this.props.game.rounds.filter(round => round.status == RoundStatus.done).length}/16</h6>
                     </div>
                 </div>
             </Link>

@@ -16,7 +16,8 @@
                 {
                     IsSuccess = false,
                     Player = player,
-                    Tip = playersTips[player.Id]
+                    Tip = playersTips[player.Id],
+                    Status = BetStatus.Set
                 };
 
                 bets.Add(bet);
@@ -34,7 +35,8 @@
                 Type = type,
                 Name = DateTime.Now.Date + "-" + ++amountOfGamesInTournament,
                 Players = participants.Select(p => new Player() { Participant = p }).ToList(),
-                Rounds = rounds
+                Rounds = rounds,
+                Status = GameStatus.NotStarted
             };
         }
 
@@ -48,7 +50,7 @@
                 var round = new Round()
                 {
                     AmountOfCards = amountOfCards,
-                    IsDone = false,
+                    Status = RoundStatus.NotStarted,
                     RoundNumber = i+1,
                     DealerNumber = (i % 4) + 1
                 };

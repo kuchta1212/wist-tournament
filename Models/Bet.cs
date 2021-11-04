@@ -19,6 +19,8 @@
 
         public Player Player { get; set; }
 
+        public BetStatus Status { get; set; }
+
         public int GetResult() => this.IsSuccess ? this.Tip + 10 : this.Tip * (-1); 
     }
 }

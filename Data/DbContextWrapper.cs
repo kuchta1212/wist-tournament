@@ -74,8 +74,9 @@
             foreach(var bet in round.Bets)
             {
                 bet.IsSuccess = betsResults[bet.Id];
+                bet.Status = BetStatus.WithResult;
             }
-            round.IsDone = true;
+            round.Status = RoundStatus.Done;
 
             this.dbContext.Update(round);
             this.dbContext.SaveChanges();
@@ -85,9 +86,19 @@
         {
             var round = this.GetRound(roundId);
             var players = this.GetPlayers(playerTips.Keys.ToList());
-            var bets = this.modelFactory.CreateBets(players, playerTips);
-            round.Bets = bets;
+            if(round.Bets.Count == 0)
+            {
+                round.Bets = this.modelFactory.CreateBets(players, playerTips);
+            }
+            else
+            {
+                foreach(var bet in round.Bets)
+                {
+                    bet.Tip = playerTips[bet.Player.Id];
+                }
+            }
 
+            round.Status = RoundStatus.BetsAreSet;
             this.dbContext.Update(round);
             this.dbContext.SaveChanges();
         }
@@ -100,6 +111,8 @@
             {
                 player.GameRank = playersOrder[player.Id];
             }
+
+            game.Status = GameStatus.Started;
 
             this.dbContext.Update(game);
             this.dbContext.SaveChanges();
@@ -176,15 +189,10 @@
             .Where(p => ids.Contains(p.Id)).ToList();
 
         private List<Game> GetGames(string tournamentId)
-            => this.dbContext.Games
-            .Include(g => g.Players)
-            .Include(g => g.Rounds)
-            .ToList();
+            => this.GetTournament(tournamentId).Games.ToList();
 
         private List<User> GetUsers(List<string> ids)
             => this.dbContext.WistUsers.Where(u => ids.Contains(u.Id)).ToList();
-
-
 
         private List<Bet> GetBets(string roundId)
             => this.GetRound(roundId).Bets;

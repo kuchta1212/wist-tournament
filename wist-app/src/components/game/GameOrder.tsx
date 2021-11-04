@@ -1,7 +1,7 @@
-﻿import * as React from 'react';
-import { IDictionary, Dictionary } from '../../typings/Dictionary';
+﻿import * as React from 'react'
+import { IDictionary, Dictionary } from '../../typings/Dictionary'
 import { Player } from "../../typings/index"
-import { getApi } from './../api/ApiFactory';
+import { getApi } from './../api/ApiFactory'
 
 interface GameOrderProps {
     players: Player[];

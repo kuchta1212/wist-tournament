@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+﻿import * as React from 'react'
 import { Game } from "../../typings/index"
 import { getApi } from "../api/ApiFactory"
 import { Loader } from '../Loader'

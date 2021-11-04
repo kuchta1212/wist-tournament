@@ -1,8 +1,8 @@
-﻿import * as React from 'react';
-import { Player, Round, Bet } from "../../typings/index"
-import { Dictionary, IDictionary } from '../../typings/Dictionary';
-import { getApi } from '../api/ApiFactory';
-import { BetCell } from './BetCell';
+﻿import * as React from 'react'
+import { Player, Round, Bet, GameStatus, RoundStatus } from "../../typings/index"
+import { Dictionary, IDictionary } from '../../typings/Dictionary'
+import { getApi } from '../api/ApiFactory'
+import { BetCell } from './BetCell'
 
 interface RoundRowProps {
     round: Round;
@@ -10,29 +10,19 @@ interface RoundRowProps {
 }
 
 interface RoundRowState {
-    state: RoundState;
     round: Round;
+    bets: IDictionary<number>;
 }
-
-enum RoundState {
-    init,
-    bets,
-    done
-}
-
-
 
 export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
-
-    private data: IDictionary<number> = new Dictionary<number>();
     private results: IDictionary<boolean> = new Dictionary<boolean>();
 
     constructor(props: RoundRowProps) {
         super(props);
 
         this.state = {
-            state: this.props.round.isDone ? RoundState.done : RoundState.init,
             round: this.props.round,
+            bets: new Dictionary<number>()
         }
     }
 
@@ -47,10 +37,10 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
     }
 
     private getContent() {
-        switch (this.state.state) {
-            case RoundState.init:
+        switch (this.state.round.status) {
+            case RoundStatus.notStarted:
                 return this.renderInit();
-            case RoundState.bets:
+            case RoundStatus.betsAreSet:
                 return this.renderBets();
             default:
                 return this.renderReadOnly();
@@ -61,7 +51,7 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
         return (
             <React.Fragment>
                 {this.props.round.bets.sort((b1, b2) => { return b1.player.gameRank > b2.player.gameRank ? 1 : -1 }).map((bet) => {
-                    <td key={bet.id}>{bet.isSuccess ? bet.tip + 10 : bet.tip * (-1)}</td>
+                    return <td key={bet.id} className={bet.isSuccess ? "bg-success" : "bg-danger"}>{bet.isSuccess ? bet.tip + 10 : bet.tip * (-1)}</td>
                 })}
             </React.Fragment>
         );
@@ -71,10 +61,10 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
         return (
             <React.Fragment>
                 {this.props.round.bets.sort((b1, b2) => { return b1.player.gameRank > b2.player.gameRank ? 1 : -1 }).map((bet) => {
-                    <BetCell key={bet.id} bet={bet} onBetResultSet={this.betResult.bind(this)} />
+                    return <BetCell key={bet.id} bet={bet} onBetResultSet={this.betResult.bind(this)} />
                 })}
                 <td>
-                    <button type="button" className="btn btn-secondary" onClick={() => this.submitResults()}>Potvrdit</button>
+                    <button type="button" className="btn btn-secondary" onClick={() => this.submitResults()}>Potvrdit výsledek</button>
                 </td>
             </React.Fragment>
         );
@@ -84,7 +74,7 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
         return (
             <React.Fragment>
                 {this.props.players.sort(p => p.gameRank).map((player) => {
-                    return <td key={player.id}><input type="number" min="0" max={this.props.round.amountOfCards} value={this.data.contains(player.id) ? this.data.get(player.id) : "0"} onChange={(event) => this.setBet(event.target.value, player.id)} /></td>
+                    return <td key={player.id}><input type="number" min="0" max={this.props.round.amountOfCards} value={this.state.bets.contains(player.id) ? this.state.bets.get(player.id) : "0"} onChange={(event) => this.setBet(event.target.value, player.id)} /></td>
                 })}
                 <td>
                     <button type="button" className="btn btn-secondary" onClick={() => this.submitBets()}>Potvrdit</button>
@@ -94,21 +84,48 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
     }
 
     private setBet(value: string, playerId: string) {
-        this.data.put(playerId, parseInt(value))
+        const data = this.state.bets;
+        data.put(playerId, parseInt(value));
+        this.setState({ bets: data });
     }
 
     private async submitBets() {
-        await getApi().setBets(this.props.round.id, this.data);
+        this.validateBets();
+        await getApi().setBets(this.props.round.id, this.state.bets);
         const round = await getApi().getRound(this.state.round.id);
-        this.setState({ state: RoundState.bets, round: round })
+        this.setState({ round: round })
+    }
+
+    private validateBets() {
+        if (this.state.bets.getKeys().length == 4) {
+            return;
+        }
+
+        let data = this.state.bets;
+        this.props.players.map((player) => {
+            if (!data.contains(player.id)) {
+                data.put(player.id, 0);
+            }
+        });
+
+        this.setState({ bets: data });
     }
 
     private async submitResults() {
-        await getApi().setBetsResult(this.props.round.id, this.state.results);
-        this.setState({ state: RoundState.bets })
+        if (!this.validateResults()) {
+            alert("Not all results are set");
+            return;
+        }
+        await getApi().setBetsResult(this.props.round.id, this.results);
+        const round = await getApi().getRound(this.state.round.id);
+        this.setState({ round: round })
     }
 
     private betResult(betId: string, isSuccess: boolean) {
         this.results.put(betId, isSuccess);
+    }
+
+    private validateResults(): boolean {
+        return this.results.getKeys().length == 4;
     }
 }

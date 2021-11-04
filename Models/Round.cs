@@ -21,6 +21,6 @@
 
         public List<Bet> Bets { get; set; }
 
-        public bool IsDone { get; set; }
+        public RoundStatus Status { get; set; }
     }
 }

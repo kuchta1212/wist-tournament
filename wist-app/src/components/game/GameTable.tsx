@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+﻿import * as React from 'react'
 import { Game } from "../../typings/index"
 import { Table } from 'reactstrap';
 import { RoundRow } from './RoundRow'
@@ -23,7 +23,7 @@ export class GameTable extends React.Component<GameTableProps, GameTableState> {
                     <tr>
                         <th>#</th>
                         {this.props.game.players.sort((p1, p2) => { return p1.gameRank > p2.gameRank ? 1 : -1 }).map((player, index) => (
-                            <th>{player.participant.user.name}</th>
+                            <th key={player.id}>{player.participant.user.name}</th>
                         ))}
                         <th/>
                     </tr>

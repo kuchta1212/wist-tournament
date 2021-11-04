@@ -1,14 +1,14 @@
-﻿import * as React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+﻿import * as React from 'react'
+import { RouteComponentProps } from 'react-router-dom'
 import { Game } from "../../typings/index"
-import { getApi } from './../api/ApiFactory';
+import { getApi } from './../api/ApiFactory'
 import { Loader } from './../Loader'
 import { GameOrder } from './GameOrder'
 import { GameTable } from './GameTable'
 
 interface GameLiveState {
     game: Game;
-    loading: boolean;
+    loading: boolean
 }
 
 interface GameParams {

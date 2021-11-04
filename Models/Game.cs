@@ -21,6 +21,8 @@
 
         public GameType Type { get; set; }
 
+        public GameStatus Status { get; set; }
+
         public Dictionary<string, int> GetResult()
         {
             var dict = new Dictionary<string, int>();
@@ -29,7 +31,7 @@
                 dict.Add(player.Id, 0);
             }
 
-            var rounds = this.Rounds.Where(r => r.IsDone);
+            var rounds = this.Rounds.Where(r => r.Status == RoundStatus.Done);
             foreach (var round in rounds)
             { 
                 foreach(var bet in round.Bets)
