@@ -43,6 +43,7 @@
     <None Remove="wist-app\src\components\game\GameList.tsx" />
     <None Remove="wist-app\src\components\game\GameLive.tsx" />
     <None Remove="wist-app\src\components\game\GameOrder.tsx" />
+    <None Remove="wist-app\src\components\game\GameResultRow.tsx" />
     <None Remove="wist-app\src\components\game\GameTable.tsx" />
     <None Remove="wist-app\src\components\game\RoundRow.tsx" />
     <None Remove="wist-app\src\components\Layout.tsx" />
@@ -71,6 +72,7 @@
     <TypeScriptCompile Include="wist-app\src\components\game\GameList.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\game\GameLive.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\game\GameOrder.tsx" />
+    <TypeScriptCompile Include="wist-app\src\components\game\GameResultRow.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\game\GameTable.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\game\RoundRow.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\Layout.tsx" />

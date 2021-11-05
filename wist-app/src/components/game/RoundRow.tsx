@@ -1,17 +1,18 @@
 ﻿import * as React from 'react'
-import { Player, Round, Bet, GameStatus, RoundStatus } from "../../typings/index"
+import { Player, Round, Bet, GameStatus, RoundStatus, BetStatus } from "../../typings/index"
 import { Dictionary, IDictionary } from '../../typings/Dictionary'
 import { getApi } from '../api/ApiFactory'
 import { BetCell } from './BetCell'
 
 interface RoundRowProps {
     round: Round;
-    players: Player[];
+    players: Player[]
+    roundFinished: (roundId: string) => void;
 }
 
 interface RoundRowState {
     round: Round;
-    bets: IDictionary<number>;
+    bets: IDictionary<number>
 }
 
 export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
@@ -19,6 +20,14 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
 
     constructor(props: RoundRowProps) {
         super(props);
+
+        if (!!this.props.round.bets) {
+            this.props.round.bets.map((bet) => {
+                if (bet.status == BetStatus.withResult) {
+                    this.results.put(bet.id, bet.isSuccess);
+                }
+            })
+        }
 
         this.state = {
             round: this.props.round,
@@ -50,7 +59,7 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
     private renderReadOnly() {
         return (
             <React.Fragment>
-                {this.props.round.bets.sort((b1, b2) => { return b1.player.gameRank > b2.player.gameRank ? 1 : -1 }).map((bet) => {
+                {this.state.round.bets.sort((b1, b2) => { return b1.player.gameRank > b2.player.gameRank ? 1 : -1 }).map((bet) => {
                     return <td key={bet.id} className={bet.isSuccess ? "bg-success" : "bg-danger"}>{bet.isSuccess ? bet.tip + 10 : bet.tip * (-1)}</td>
                 })}
             </React.Fragment>
@@ -60,7 +69,7 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
     private renderBets() {
         return (
             <React.Fragment>
-                {this.props.round.bets.sort((b1, b2) => { return b1.player.gameRank > b2.player.gameRank ? 1 : -1 }).map((bet) => {
+                {this.state.round.bets.sort((b1, b2) => { return b1.player.gameRank > b2.player.gameRank ? 1 : -1 }).map((bet) => {
                     return <BetCell key={bet.id} bet={bet} onBetResultSet={this.betResult.bind(this)} />
                 })}
                 <td>
@@ -74,7 +83,7 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
         return (
             <React.Fragment>
                 {this.props.players.sort(p => p.gameRank).map((player) => {
-                    return <td key={player.id}><input type="number" min="0" max={this.props.round.amountOfCards} value={this.state.bets.contains(player.id) ? this.state.bets.get(player.id) : "0"} onChange={(event) => this.setBet(event.target.value, player.id)} /></td>
+                    return <td key={player.id}><input type="number" min="0" max={this.state.round.amountOfCards} value={this.state.bets.contains(player.id) ? this.state.bets.get(player.id) : "0"} onChange={(event) => this.setBet(event.target.value, player.id)} /></td>
                 })}
                 <td>
                     <button type="button" className="btn btn-secondary" onClick={() => this.submitBets()}>Potvrdit</button>
@@ -91,7 +100,7 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
 
     private async submitBets() {
         this.validateBets();
-        await getApi().setBets(this.props.round.id, this.state.bets);
+        await getApi().setBets(this.state.round.id, this.state.bets);
         const round = await getApi().getRound(this.state.round.id);
         this.setState({ round: round })
     }
@@ -113,11 +122,12 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
 
     private async submitResults() {
         if (!this.validateResults()) {
-            alert("Not all results are set");
+            alert("Zadej všechny výsledky");
             return;
         }
-        await getApi().setBetsResult(this.props.round.id, this.results);
+        await getApi().setBetsResult(this.state.round.id, this.results);
         const round = await getApi().getRound(this.state.round.id);
+        this.props.roundFinished(this.state.round.id);
         this.setState({ round: round })
     }
 

@@ -53,7 +53,7 @@ export class Api implements IApi {
     async setBetsResult(roundId: string, betsResults: Dictionary<boolean>): Promise<void> {
         await post(`${API_URL}/tournament/game/round/${roundId}/bets/results`, betsResults.getHashMap());
     }
-    getGameResults(gameId: string): Promise<Dictionary<number>> {
-        return convert<Dictionary<number>>(get(`${API_URL}/tournament/game/${gameId}/result`));
+    getGameResults(gameId: string): Promise<any> {
+        return convert<any>(get(`${API_URL}/tournament/game/${gameId}/result`));
     }
 }

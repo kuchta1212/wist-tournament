@@ -7,3 +7,7 @@
 .game-box {
 
 }
+
+.dealer-cell {
+    border-color: yellow;
+}
