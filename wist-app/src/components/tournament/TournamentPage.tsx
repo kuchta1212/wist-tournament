@@ -4,8 +4,11 @@ import { getApi } from './../api/ApiFactory';
 import { Loader } from './../Loader'
 import { TournamentControlPanel } from './TournamentControlPanel'
 import { GameList } from './../game/GameList'
+import { RouteComponentProps } from 'react-router-dom';
+import { ParticipantRank } from './ParticipantRank';
 
-interface TournamentPageProps {
+
+interface TournamentPageParams {
     tournamentId: string;
 }
 
@@ -14,9 +17,9 @@ interface TournamentPageState {
     tournament: Tournament;
 }
 
-export class TournamentPage extends React.Component<TournamentPageProps, TournamentPageState> {
+export class TournamentPage extends React.Component<RouteComponentProps<TournamentPageParams>, TournamentPageState> {
 
-    constructor(props: TournamentPageProps) {
+    constructor(props: RouteComponentProps<TournamentPageParams>) {
         super(props);
 
         this.state = {
@@ -26,24 +29,42 @@ export class TournamentPage extends React.Component<TournamentPageProps, Tournam
     }
 
     public async componentDidMount() {
-        const tournament = await getApi().getTournament(this.props.tournamentId);
-        this.setState({ tournament: tournament, loading: false });
+        await this.getData();
     }
 
     public render() {
         let contents = this.state.loading
             ? <Loader />
-            : <GameList games={!!this.state.tournament.games ? this.state.tournament.games : []} />
+            : this.renderContent()
 
         return (
             <div className="tournament-page text-light">
-                <TournamentControlPanel tournament={this.state.tournament} reload={this.reload.bind(this)}/>
                 {contents}
             </div>
         );
     }
 
-    private reload() {
+    private renderContent() {
+        return (
+            <div className="row">
+                <div className="col col-lg">
+                    <GameList games={!!this.state.tournament.games ? this.state.tournament.games : []} />
+                </div>
+                <div className="col">
+                    <ParticipantRank realod={this.reloadPage.bind(this)} participants={this.state.tournament.participants} tournamentId={this.state.tournament.id} />
+                </div>
+            </div>
+        );
+        
+    }
+
+    private async getData() {
+        const tournament = await getApi().getTournament(this.props.match.params.tournamentId);
+        this.setState({ tournament: tournament, loading: false });
+    }
+
+    private async reloadPage() {
         this.setState({ loading: true });
+        await this.getData();
     }
 }

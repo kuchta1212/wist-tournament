@@ -27,7 +27,7 @@ export class Api implements IApi {
         await post(`${API_URL}/tournament/final?tournamentId=${tournamentId}`);
     }
     async deleteTournament(tournamentId: string): Promise<void> {
-        await del(`${API_URL}/tournament/`);
+        await del(`${API_URL}/tournament/${tournamentId}`);
     }
     getTournament(tournamentId: string): Promise<Tournament> {
         return convert<Tournament>(get(`${API_URL}/tournaments/${tournamentId}`));
@@ -35,8 +35,8 @@ export class Api implements IApi {
     getTournaments(): Promise<Tournament[]> {
         return convert<Tournament[]>(get(`${API_URL}/tournaments`));
     }
-    async removeParticipant(tournamentId: string, userId: string): Promise<void> {
-        await del(`${API_URL}/tournament/${tournamentId}/participant/remove?userId=${userId}`);
+    async removeParticipant(tournamentId: string, participantId: string): Promise<void> {
+        await del(`${API_URL}/tournament/${tournamentId}/participant/remove?participantId=${participantId}`);
     }
     async addParticipant(tournamentId: string, userId: string): Promise<void> {
         await post(`${API_URL}/tournament/${tournamentId}/participant/add?userId=${userId}`);

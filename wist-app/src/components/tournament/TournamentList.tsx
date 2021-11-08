@@ -25,8 +25,7 @@ export class TournamentList extends React.Component<TournamentListProps, Tournam
     }
 
     public async componentDidMount() {
-        const tournaments = await getApi().getTournaments();
-        this.setState({ tournaments: tournaments, loading: false });
+        await this.getData();
     }
 
     public render() {
@@ -45,14 +44,20 @@ export class TournamentList extends React.Component<TournamentListProps, Tournam
         return (
             <div className="tournament-list">
                 {this.state.tournaments.map((tournament, index) => (
-                    <TournamentBox key={tournament.id} tournament={tournament} isNew={false} tournamentAdded={() => { return;}}/>
+                    <TournamentBox key={tournament.id} tournament={tournament} isNew={false} reload={this.reload.bind(this)}/>
                 ))}
-                <TournamentBox tournament={{} as Tournament} isNew={true} tournamentAdded={this.tournamentAdded.bind(this)} />
+                <TournamentBox tournament={{} as Tournament} isNew={true} reload={this.reload.bind(this)} />
             </div>
         );
     }
 
-    private tournamentAdded() {
-        alert("added");
+    private async getData() {
+        const tournaments = await getApi().getTournaments();
+        this.setState({ tournaments: tournaments, loading: false });
+    }
+
+    private reload() {
+        this.setState({ loading: true });
+        this.getData();
     }
 }

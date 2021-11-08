@@ -18,7 +18,7 @@ export class GameBox extends React.Component<GameBoxProps, GameBoxState> {
     public render() {
         return (
             <Link to={`/game-live/${this.props.game.id}`}>
-                <div className="card game-box bg-info">
+                <div className="card game-box bg-secondary">
                     <div className="card-body">
                         <h6 className="card-subtitle mb-2 text-dark">{this.gameTypeToText(this.props.game.type)}</h6>
                         {this.renderPlayers()}

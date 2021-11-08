@@ -30,11 +30,12 @@
 }
 
 .tournament-page {
-    background-color: darkgrey;
-    border: 3px;
-    border-color: black;
 }
 
 .tournament-control-panel {
     justify-content: space-between;
+}
+
+.participant-left {
+    background-color: darkgrey
 }

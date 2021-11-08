@@ -50,8 +50,8 @@ export class TournamentModal extends React.Component<TournamentModalProps, Tourn
         return (
             <div className="row">
                 <h5>Přidat turnaj</h5>
-                <input type="text" className="form-control" placeholder="Jméno turnaje" value={this.state.name != "" ? this.state.name : "Jméno turnaje"} onChange={(event) => this.setTournamentName(event.target.value)} aria-label="" aria-describedby="basic-addon1" />
-                <Rank clickable={true} userSelected={this.userSelected.bind(this)} />
+                <input type="text" className="form-control" placeholder="Jméno turnaje" value={this.state.name} onChange={(event) => this.setTournamentName(event.target.value)} aria-label="" aria-describedby="basic-addon1" />
+                <Rank selectAllPosibility={true} clickable={true} userSelected={this.userSelected.bind(this)} />
                 <button type="button" className="btn btn-primary btn-lg btn-block" onClick={() => this.createTournament()}>Vytvořit</button>
                 <button type="button" className="btn btn-secondary btn-lg btn-block" onClick={ () => this.props.close()}>Zrušit</button>
             </div>
@@ -71,7 +71,7 @@ export class TournamentModal extends React.Component<TournamentModalProps, Tourn
         }
     }
 
-    private createTournament() {
+    private async createTournament() {
         if (this.state.name === "") {
             alert("Vyplň jméno");
             return;
@@ -82,11 +82,10 @@ export class TournamentModal extends React.Component<TournamentModalProps, Tourn
             return;
         }
 
+        await getApi().createTournament(this.state.name, this.state.selectedUsers);
         this.setState({ send: true });
-        getApi().createTournament(this.state.name, this.state.selectedUsers).then(() => {
-            alert("done");
-            this.props.add();
-        });
+        this.props.add();
+
     }
 
     private setTournamentName(name: string) {

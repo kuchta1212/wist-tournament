@@ -47,7 +47,11 @@
 
         public void DeleteTournament(string tournamentId)
         {
-            var tournament = this.dbContext.Tournaments.First(t => t.Id == tournamentId);
+            var tournament = this.GetTournament(tournamentId);
+
+            this.DeleteParticipants(tournament.Participants);
+            this.DeleteGames(tournament.Games);
+
             this.dbContext.Tournaments.Remove(tournament);
 
             this.dbContext.SaveChanges();
@@ -135,13 +139,16 @@
         public Tournament GetTournament(string tournamentId)
             => this.dbContext.Tournaments
             .Include(t => t.Participants)
-            .ThenInclude(p => p.User)
+                .ThenInclude(p => p.User)
+            .Include(t => t.Participants)
+                .ThenInclude(p => p.TournamentPoints)
             .Include(t => t.Games)
-            .ThenInclude(g => g.Rounds)
+                .ThenInclude(g => g.Rounds)
+                    .ThenInclude(r => r.Bets)
             .Include(t => t.Games)
-            .ThenInclude(g => g.Players)
-            .ThenInclude(p => p.Participant)
-            .ThenInclude(p => p.User)
+                .ThenInclude(g => g.Players)
+                    .ThenInclude(p => p.Participant)
+                        .ThenInclude(p => p.User)
             .First(t => t.Id == tournamentId);
 
         public void SetParticipantAsLeft(string tournamentId, string participantId)
@@ -159,7 +166,11 @@
             var tournament = this.GetTournament(tournamentId);
             var user = this.GetUser(userId);
 
-            tournament.Participants.Add(new Participant() { User = user });
+            if(tournament.Participants.Any(p => p.User.Id == userId))
+            {
+                return;
+            }
+            tournament.Participants.Add(new Participant() { User = user, TournamentPoints = new TournamentPoints() });
             
             this.dbContext.Update(tournament);
             this.dbContext.SaveChanges();
@@ -181,6 +192,50 @@
                     .ThenInclude(p => p.Participant)
                         .ThenInclude(p => p.User)
             .FirstOrDefault(r => r.Id == roundId);
+
+        private void DeleteParticipants(List<Participant> participants)
+        {
+            foreach(var participant in participants)
+            {
+                this.dbContext.Remove(participant.TournamentPoints);
+                this.dbContext.Remove(participant);
+            }
+        }
+
+        private void DeleteGames(List<Game> games)
+        {
+            foreach(var game in games)
+            {
+                this.DeleteRounds(game.Rounds);
+                this.DeletePlayers(game.Players);
+                this.dbContext.Remove(game);
+            }
+        }
+
+        private void DeleteRounds(List<Round> rounds)
+        {
+            foreach(var round in rounds)
+            {
+                this.DeleteBets(round.Bets);
+                this.dbContext.Remove(round);
+            }
+        }
+
+        private void DeleteBets(List<Bet> bets)
+        {
+            foreach(var bet in bets)
+            {
+                this.dbContext.Remove(bet);
+            }
+        }
+
+        private void DeletePlayers(List<Player> players)
+        {
+            foreach(var player in players)
+            {
+                this.dbContext.Remove(player);
+            }
+        }
 
         private List<Participant> GetParticipants(List<string> ids) 
             => this.dbContext.Participants

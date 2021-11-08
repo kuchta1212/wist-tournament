@@ -1,5 +1,6 @@
 ﻿import * as React from 'react';
 import { Tournament } from "../../typings/index"
+import { Link } from 'react-router-dom';
 import newIcon from './../../images/new.svg';
 import podium from './../../images/podium.svg'
 import { TournamentModal } from './TournamentModal'
@@ -10,12 +11,12 @@ import { Collapse } from 'react-collapse'
 interface TournamentBoxProps {
     tournament: Tournament;
     isNew: boolean;
-    tournamentAdded: () => void;
+    reload: () => void;
 }
 
 interface TournamentBoxState {
     showNewForm: boolean
-    showTournamentPage: boolean;
+//    showTournamentPage: boolean;
 }
 
 export class TournamentBox extends React.Component<TournamentBoxProps, TournamentBoxState> {
@@ -25,7 +26,7 @@ export class TournamentBox extends React.Component<TournamentBoxProps, Tournamen
 
         this.state = {
             showNewForm: false,
-            showTournamentPage: false,
+            //showTournamentPage: false,
         }
     }
 
@@ -47,15 +48,15 @@ export class TournamentBox extends React.Component<TournamentBoxProps, Tournamen
                 <div className="card tournament-box bg-secondary" onClick={() => this.clickOnNewBox()}>
                     <img className="card-img-top new-icon" src={newIcon} alt="Nový turnaj" />
                 </div>
-                {this.state.showNewForm ? <TournamentModal close={this.closeModal.bind(this)} add={this.props.tournamentAdded.bind(this)} /> : null}
+                {this.state.showNewForm ? <TournamentModal close={this.closeModal.bind(this)} add={this.props.reload.bind(this)} /> : null}
             </div>
         );
     }
 
     private renderTournamentBox() {
         return (
-            <div>
-                <div className="card tournament-box bg-secondary" onClick={() => this.clickOnBox()}>
+            <Link to={`/tournament/${this.props.tournament.id}`}>
+                <div className="card tournament-box bg-secondary">
                     <div className="card-body">
                         <h5 className="card-title text-dark">{this.props.tournament.name}</h5>
                         <h6 className="card-subtitle mb-2 text-dark">{this.props.tournament.date}</h6>
@@ -63,8 +64,7 @@ export class TournamentBox extends React.Component<TournamentBoxProps, Tournamen
                     </div>
                     <img className="card-img-bottom podium-icon" src={podium} alt="Nový turnaj" />
                 </div>
-                {this.state.showTournamentPage ? <TournamentPage tournamentId={this.props.tournament.id} /> : null}
-            </div>
+            </Link>
         );
     }
 
@@ -84,9 +84,5 @@ export class TournamentBox extends React.Component<TournamentBoxProps, Tournamen
 
     private clickOnNewBox() {
         this.setState({ showNewForm: !this.state.showNewForm });
-    }
-
-    private clickOnBox() {
-        this.setState({ showTournamentPage: !this.state.showTournamentPage });
     }
 }

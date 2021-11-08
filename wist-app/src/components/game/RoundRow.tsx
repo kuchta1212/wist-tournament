@@ -31,7 +31,7 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
 
         this.state = {
             round: this.props.round,
-            bets: new Dictionary<number>()
+            bets: this.betsToDict(this.props.round.bets)
         }
     }
 
@@ -43,6 +43,19 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
                 {content}
             </tr>
         );
+    }
+
+    private betsToDict(bets: Bet[]): IDictionary<number> {
+        let result = new Dictionary<number>();
+        if (!bets) {
+            return result;
+        }
+
+        for (let bet of bets) {
+            result.put(bet.player.id, bet.tip);
+        }
+
+        return result;
     }
 
     private getContent() {
@@ -75,6 +88,9 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
                 <td>
                     <button type="button" className="btn btn-secondary" onClick={() => this.submitResults()}>Potvrdit výsledek</button>
                 </td>
+                <td>
+                    <button type="button" className="btn btn-light" onClick={() => this.changeBets()}>Změnit</button>
+                </td>
             </React.Fragment>
         );
     }
@@ -83,13 +99,29 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
         return (
             <React.Fragment>
                 {this.props.players.sort(p => p.gameRank).map((player) => {
-                    return <td key={player.id}><input type="number" min="0" max={this.state.round.amountOfCards} value={this.state.bets.contains(player.id) ? this.state.bets.get(player.id) : "0"} onChange={(event) => this.setBet(event.target.value, player.id)} /></td>
+                    return (
+                        <td key={player.id} className={player.gameRank == this.state.round.dealerNumber ? "dealer-cell" : ""}>
+                            <input type="number" min="0" max={this.state.round.amountOfCards} value={this.getInitValue(player.id)} onChange={(event) => this.setBet(event.target.value, player.id)} />
+                        </td>
+                    )
                 })}
                 <td>
                     <button type="button" className="btn btn-secondary" onClick={() => this.submitBets()}>Potvrdit</button>
                 </td>
             </React.Fragment>
         );
+    }
+
+    private getInitValue(playerId: string) {
+        return this.state.bets.contains(playerId)
+            ? this.state.bets.get(playerId)
+            : 0
+    }
+
+    private changeBets() {
+        let round = this.state.round;
+        round.status = RoundStatus.notStarted;
+        this.setState({ round: round });
     }
 
     private setBet(value: string, playerId: string) {
