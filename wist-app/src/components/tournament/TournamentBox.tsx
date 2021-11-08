@@ -36,7 +36,7 @@ export class TournamentBox extends React.Component<TournamentBoxProps, Tournamen
             : this.renderTournamentBox();
 
         return (
-            <div>
+            <div className="col">
                 {cardBody}
             </div>
         );
@@ -55,16 +55,16 @@ export class TournamentBox extends React.Component<TournamentBoxProps, Tournamen
 
     private renderTournamentBox() {
         return (
-            <Link to={`/tournament/${this.props.tournament.id}`}>
-                <div className="card tournament-box bg-secondary">
-                    <div className="card-body">
-                        <h5 className="card-title text-dark">{this.props.tournament.name}</h5>
-                        <h6 className="card-subtitle mb-2 text-dark">{this.props.tournament.date}</h6>
-                        { this.renderTopThree()}
+            <Link className="link-box" to={`/tournament/${this.props.tournament.id}`}>
+                    <div className="card tournament-box bg-secondary">
+                        <div className="card-body">
+                            <h5 className="card-title text-dark">{this.props.tournament.name}</h5>
+                            <h6 className="card-subtitle mb-2 text-dark">{this.props.tournament.date}</h6>
+                            { this.renderTopThree()}
+                        </div>
+                        <img className="card-img-bottom podium-icon" src={podium} alt="Nový turnaj" />
                     </div>
-                    <img className="card-img-bottom podium-icon" src={podium} alt="Nový turnaj" />
-                </div>
-            </Link>
+                </Link>
         );
     }
 

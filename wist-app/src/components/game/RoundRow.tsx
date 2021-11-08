@@ -7,7 +7,7 @@ import { BetCell } from './BetCell'
 interface RoundRowProps {
     round: Round;
     players: Player[]
-    roundFinished: (roundId: string) => void;
+    roundFinished: (round: Round) => void;
 }
 
 interface RoundRowState {
@@ -159,8 +159,8 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
         }
         await getApi().setBetsResult(this.state.round.id, this.results);
         const round = await getApi().getRound(this.state.round.id);
-        this.props.roundFinished(this.state.round.id);
-        this.setState({ round: round })
+        this.props.roundFinished(round);
+        //this.setState({ round: round });
     }
 
     private betResult(betId: string, isSuccess: boolean) {

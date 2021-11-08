@@ -17,15 +17,17 @@ export class GameBox extends React.Component<GameBoxProps, GameBoxState> {
 
     public render() {
         return (
-            <Link to={`/game-live/${this.props.game.id}`}>
-                <div className="card game-box bg-secondary">
-                    <div className="card-body">
-                        <h6 className="card-subtitle mb-2 text-dark">{this.gameTypeToText(this.props.game.type)}</h6>
-                        {this.renderPlayers()}
-                        <h6>Odehráno: {this.props.game.rounds.filter(round => round.status == RoundStatus.done).length}/16</h6>
+            <div className="col">
+                <Link className="link-box" to={`/game-live/${this.props.game.id}`}>
+                    <div className="card game-box bg-secondary">
+                        <div className="card-body">
+                            <h6 className="card-subtitle mb-2 text-dark">{this.gameTypeToText(this.props.game.type)}</h6>
+                            {this.renderPlayers()}
+                            <h6>Odehráno: {this.props.game.rounds.filter(round => round.status == RoundStatus.done).length}/16</h6>
+                        </div>
                     </div>
-                </div>
-            </Link>
+                </Link>
+            </div>
         );
     }
 

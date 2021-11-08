@@ -39,3 +39,8 @@
 .participant-left {
     background-color: darkgrey
 }
+
+.link-box {
+    color: inherit;
+    text-decoration: none;
+}

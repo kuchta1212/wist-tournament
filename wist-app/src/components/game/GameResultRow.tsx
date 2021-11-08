@@ -24,8 +24,12 @@ export class GameResultRow extends React.Component<GameResultProps, GameResultSt
         }
     }
 
-    public componentDidMount() {
-        this.getData();
+    public async componentDidMount() {
+        await this.getData();
+    }
+
+    public async componentWillReceiveProps(nextProps: GameResultProps) {
+        await this.getData();
     }
 
     public render() {

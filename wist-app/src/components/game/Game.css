@@ -12,3 +12,8 @@
     border-color: yellow;
     border-width: 2px;
 }
+
+.game-box:hover {
+    border-color: red;
+    cursor: pointer;
+}

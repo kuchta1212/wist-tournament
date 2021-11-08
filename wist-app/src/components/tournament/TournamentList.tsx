@@ -42,7 +42,7 @@ export class TournamentList extends React.Component<TournamentListProps, Tournam
 
     private renderList() {
         return (
-            <div className="tournament-list">
+            <div className="row tournament-list">
                 {this.state.tournaments.map((tournament, index) => (
                     <TournamentBox key={tournament.id} tournament={tournament} isNew={false} reload={this.reload.bind(this)}/>
                 ))}

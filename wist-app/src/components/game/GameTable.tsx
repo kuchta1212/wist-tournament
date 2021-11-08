@@ -47,11 +47,12 @@ export class GameTable extends React.Component<GameTableProps, GameTableState> {
         );
     }
 
-    private roundFinished(roundId: string) {
+    private roundFinished(newRound: Round) {
         let rounds = this.state.rounds;
-        var round = rounds.find(r => r.id == roundId);
+        var round = rounds.find(r => r.id == newRound.id);
         if (!!round) {
-            round.status = RoundStatus.done;
+            round.status = newRound.status;
+            round.bets = newRound.bets;
         }
         
         this.setState({ rounds: rounds });

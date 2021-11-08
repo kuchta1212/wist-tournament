@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import { Tournament } from "../../typings/index"
+import { GameType, Tournament } from "../../typings/index"
 import { getApi } from './../api/ApiFactory';
 import { Loader } from './../Loader'
 import { TournamentControlPanel } from './TournamentControlPanel'
@@ -47,10 +47,17 @@ export class TournamentPage extends React.Component<RouteComponentProps<Tourname
     private renderContent() {
         return (
             <div className="row">
-                <div className="col col-lg">
-                    <GameList games={!!this.state.tournament.games ? this.state.tournament.games : []} />
-                </div>
                 <div className="col">
+                    <h2>První kolo</h2>
+                    <GameList games={!!this.state.tournament.games ? this.state.tournament.games.filter(g => g.type == GameType.FirstRound) : []} />
+                    <h2>Druhé kolo</h2>
+                    <GameList games={!!this.state.tournament.games ? this.state.tournament.games.filter(g => g.type == GameType.SecondRound) : []} />
+                    <h2>Třetí kolo</h2>
+                    <GameList games={!!this.state.tournament.games ? this.state.tournament.games.filter(g => g.type == GameType.ThirdRound) : []} />
+                    <h2>Finálové kolo</h2>
+                    <GameList games={!!this.state.tournament.games ? this.state.tournament.games.filter(g => g.type == GameType.FinalRound) : []} />
+                </div>
+                <div className="col col-lg-2">
                     <ParticipantRank realod={this.reloadPage.bind(this)} participants={this.state.tournament.participants} tournamentId={this.state.tournament.id} />
                 </div>
             </div>

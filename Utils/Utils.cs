@@ -47,7 +47,7 @@
         public List<List<Participant>> GenerateParticipantGroupsCore(List<Participant> participants, List<Participant> preSelected, int amountOfGroups)
         {
             var nonSelectedIndexes = new List<int>();
-            for (var j = amountOfGroups - 1; j < participants.Count; j++)
+            for (var j = amountOfGroups; j < participants.Count; j++)
             {
                 nonSelectedIndexes.Add(j);
             }

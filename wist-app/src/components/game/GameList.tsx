@@ -21,7 +21,7 @@ export class GameList extends React.Component<GameListProps, GameListState> {
 
     public render() {
         return (
-            <div className="game-list text-light">
+            <div className="row game-list text-light">
                 {
                     this.props.games.map((game, index) => (
                         <GameBox key={game.id} game={game} />

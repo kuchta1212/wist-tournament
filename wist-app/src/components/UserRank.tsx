@@ -104,9 +104,17 @@ export class Rank extends React.Component<RankProps, RankState> {
 
     private selectAll() {
         if (this.state.selectedUsers.length == 0) {
-            const allUsersIds = this.state.users.map((user) => { return user.id })
+            const allUsersIds = this.state.users.map((user) => {
+                this.props.userSelected(user.id, true);
+                return user.id
+            })
+            
             this.setState({ selectedUsers: this.state.selectedUsers.concat(allUsersIds) })
         } else {
+            this.state.selectedUsers.map((userId) => {
+                this.props.userSelected(userId, false);
+            });
+
             this.setState({selectedUsers: []})
         }
     }
