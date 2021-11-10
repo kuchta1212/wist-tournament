@@ -1,6 +1,6 @@
 ﻿import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { Game, GameType, RoundStatus } from "../../typings/index"
+import { Game, GameStatus, GameType, RoundStatus } from "../../typings/index"
 
 interface GameBoxProps {
     game: Game;
@@ -19,7 +19,7 @@ export class GameBox extends React.Component<GameBoxProps, GameBoxState> {
         return (
             <div className="col">
                 <Link className="link-box" to={`/game-live/${this.props.game.id}`}>
-                    <div className="card game-box bg-secondary">
+                    <div className={this.getClassName()}>
                         <div className="card-body">
                             <h6 className="card-subtitle mb-2 text-dark">{this.gameTypeToText(this.props.game.type)}</h6>
                             {this.renderPlayers()}
@@ -29,6 +29,24 @@ export class GameBox extends React.Component<GameBoxProps, GameBoxState> {
                 </Link>
             </div>
         );
+    }
+
+    private getClassName() {
+        let className = "card game-box";
+
+        switch (this.props.game.status) {
+            case GameStatus.finished:
+                className = className.concat(" bg-success");
+                break;
+            case GameStatus.started:
+                className = className.concat(" bg-warning");
+                break;
+            case GameStatus.notStarted:
+                className = className.concat(" bg-danger");
+                break;
+        }
+
+        return className;
     }
 
     private renderPlayers() {

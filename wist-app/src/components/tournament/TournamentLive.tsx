@@ -15,13 +15,13 @@ interface TournamentParam {
     tournamentId: string
 }
 
-export class TournamentLive extends React.Component<RouteComponentProps<TournamentParam>, TournamentLiveState> {
+export class TournamentLive extends React.Component<TournamentParam, TournamentLiveState> {
 
-    constructor(props: RouteComponentProps<TournamentParam>) {
+    constructor(props: TournamentParam) {
         super(props);
 
         this.state = {
-            tournamentId: this.props.match.params.tournamentId
+            tournamentId: this.props.tournamentId
         }
     }
 

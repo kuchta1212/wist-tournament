@@ -1,5 +1,6 @@
 ﻿namespace Wist.Utils
 {
+    using Microsoft.Extensions.Options;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -9,18 +10,20 @@
     public class Utils : IUtils
     {
         private readonly Random random;
+        private readonly IOptions<WinnerPointsOptions> winnerPointOptions;
 
-        public Utils()
+        public Utils(IOptions<WinnerPointsOptions> winnerPointOptions)
         {
             this.random = new Random();
+            this.winnerPointOptions = winnerPointOptions;
         }
 
         public List<List<Participant>> GenerateFinalParticipantGroups(List<Participant> participants)
         {
             var result = new List<List<Participant>>();
-            var max = participants.Count;
+            var max = participants.Count / 4;
 
-            var ordered = participants.OrderByDescending(p => p.TournamentPoints);
+            var ordered = participants.Where(p => !p.Left).OrderByDescending(p => p.TournamentPoints);
             for(var i = 0; i < max; i++)
             {
                 var list = ordered.Skip(i * 4).Take(4).ToList();
@@ -32,22 +35,24 @@
 
         public List<List<Participant>> GenerateParticipantGroups(List<Participant> participants, List<Game> games)
         {
-            var amountOfGroups = participants.Count / 4;
-            var mustBe = this.GetMustBe(participants, games);
-            return this.GenerateParticipantGroupsCore(participants, mustBe, amountOfGroups);
+            var playingParticipants = participants.Where(p => !p.Left).ToList();
+            var amountOfGroups = playingParticipants.Count / 4;
+            var mustBe = this.GetMustBe(playingParticipants, games);
+            return this.GenerateParticipantGroupsCore(playingParticipants, mustBe, amountOfGroups);
         }
 
         public List<List<Participant>> GenerateInitialParticipantGroups(List<Participant> participants)
         {
-            var amountOfGroups = participants.Count / 4;
-            var preSelected = participants.OrderByDescending(p => p.User.Points).Take(amountOfGroups).ToList();
-            return this.GenerateParticipantGroupsCore(participants, preSelected, amountOfGroups);
+            var playingParticipants = participants.Where(p => !p.Left).ToList();
+            var amountOfGroups = playingParticipants.Count / 4;
+            var preSelected = playingParticipants.OrderByDescending(p => p.User.Points).Take(amountOfGroups).ToList();
+            return this.GenerateParticipantGroupsCore(playingParticipants, preSelected, amountOfGroups);
         }
 
         public List<List<Participant>> GenerateParticipantGroupsCore(List<Participant> participants, List<Participant> preSelected, int amountOfGroups)
         {
             var nonSelectedIndexes = new List<int>();
-            for (var j = amountOfGroups; j < participants.Count; j++)
+            for (var j = preSelected.Count; j < participants.Count; j++)
             {
                 nonSelectedIndexes.Add(j);
             }
@@ -159,6 +164,39 @@
             }
 
             return results[len / 2];
+        }
+
+        public void RecalculateTotalTournamentPoints(Tournament tournament)
+        {
+            var finalGames = tournament.Games.Where(g => g.Type == GameType.FinalRound).ToList();
+            var sortedDictFinalGames = finalGames.ToDictionary(g => int.Parse(g.Name[5..]), g => g).OrderBy(g => g.Key);
+
+            var tournamentRank = 1;
+            foreach(var game in sortedDictFinalGames)
+            {
+                var gameResult = game.Value.GetResult().OrderBy(r => r.Value);
+                foreach(var result in gameResult)
+                {
+                    if(tournamentRank > 20)
+                    {
+                        return;
+                    }
+
+                    var participant = game.Value.Players.First(p => p.Id == result.Key).Participant;
+                    participant.TournamentPoints.TotalPoints = this.GetTotalPoints(tournamentRank);
+                    tournamentRank++;
+                }
+            }
+        }
+
+        private int GetTotalPoints(int tournamentRank)
+        {
+            if(tournamentRank < this.winnerPointOptions.Value.Points.Count +1)
+            {
+                return this.winnerPointOptions.Value.Points[tournamentRank - 1];
+            }
+
+            return this.winnerPointOptions.Value.StartingIndex - tournamentRank;
         }
     }
 }

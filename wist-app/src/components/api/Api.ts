@@ -8,6 +8,9 @@ import { Bet, Round } from "../../typings/index";
 const API_URL = '/api';
 
 export class Api implements IApi {
+    async tournamentFinish(tournamentId: string): Promise<void> {
+        await post(`${API_URL}/tournament/${tournamentId}/finish`);
+    }
     getRound(roundId: string): Promise<Round> {
         return convert<Round>(get(`${API_URL}/tournament/game/round/${roundId}`));
     }

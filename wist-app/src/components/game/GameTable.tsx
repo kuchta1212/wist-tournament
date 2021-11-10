@@ -21,7 +21,7 @@ export class GameTable extends React.Component<GameTableProps, GameTableState> {
             rounds: this.props.game.rounds
         }
     }
-
+    
     public render() {
         return (
             <Table className="text-light">

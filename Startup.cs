@@ -8,6 +8,7 @@ namespace Wist
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using System.Collections.Generic;
     using Wist.Data;
     using Wist.Models;
     using Wist.Utils;
@@ -29,6 +30,12 @@ namespace Wist
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddControllersWithViews();
+
+            services.Configure<WinnerPointsOptions>(opt =>
+            {
+                opt.Points = Configuration.GetSection("WinnerPoints:Points").Get<List<int>>();
+                opt.StartingIndex = Configuration.GetSection("WinnerPoints").GetValue<int>("StartingIndex");
+            });
 
             services.AddTransient<IDbContextWrapper, DbContextWrapper>();
             services.AddTransient<IModelFactory, ModelFactory>();

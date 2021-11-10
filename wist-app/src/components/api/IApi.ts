@@ -19,4 +19,5 @@ export interface IApi {
     setBetsResult(roundId: string, betsResults: IDictionary<boolean>): Promise<void>;
     getGameResults(gameId: string): Promise<any>;
     getRound(roundId: string): Promise<Round>;
+    tournamentFinish(tournamentId: string): Promise<void>;
 }

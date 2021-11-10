@@ -102,6 +102,8 @@
                 tournament.Games.Add(game);
             }
 
+            this.dbContextWrapper.UpdateTournament(tournament);
+
             return new OkResult();
         }
 
@@ -179,6 +181,15 @@
         {
             var round = this.dbContextWrapper.GetRound(roundId);
             return new OkObjectResult(round);
+        }
+
+        [HttpPost("tournament/{tournamentId}/finish")]
+        public IActionResult FinishTournament([FromRoute] string tournamentId)
+        {
+            var tournament = this.dbContextWrapper.GetTournament(tournamentId);
+            this.utils.RecalculateTotalTournamentPoints(tournament);
+            this.dbContextWrapper.UpdateTournament(tournament);
+            return new OkResult();
         }
     }
 }

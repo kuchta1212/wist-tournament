@@ -177,13 +177,24 @@
         }
 
         public Game GetGame(string gameId)
-            => this.dbContext.Games
+        { 
+            var game = this.dbContext.Games
             .Include(g => g.Players)
                 .ThenInclude(p => p.Participant)
                     .ThenInclude(p => p.User)
             .Include(g => g.Rounds)
                 .ThenInclude(r => r.Bets)
-            .FirstOrDefault(r => r.Id == gameId);
+            .FirstOrDefault(r => r.Id == gameId); 
+
+            if(game.Rounds.Count(r => r.Status == RoundStatus.Done) == 16 && game.Status != GameStatus.Finished)
+            {
+                game.Status = GameStatus.Finished;
+                this.dbContext.Update(game);
+                this.dbContext.SaveChanges();
+            }
+
+            return game;
+        }
 
         public Round GetRound(string roundId)
             => this.dbContext.Rounds

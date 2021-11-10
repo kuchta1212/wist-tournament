@@ -16,7 +16,6 @@ interface TournamentBoxProps {
 
 interface TournamentBoxState {
     showNewForm: boolean
-//    showTournamentPage: boolean;
 }
 
 export class TournamentBox extends React.Component<TournamentBoxProps, TournamentBoxState> {
@@ -26,7 +25,6 @@ export class TournamentBox extends React.Component<TournamentBoxProps, Tournamen
 
         this.state = {
             showNewForm: false,
-            //showTournamentPage: false,
         }
     }
 

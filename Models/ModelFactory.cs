@@ -33,7 +33,7 @@
             return new Game()
             {
                 Type = type,
-                Name = DateTime.Now.Date + "-" + ++amountOfGamesInTournament,
+                Name = "Stůl-" + ++amountOfGamesInTournament,
                 Players = participants.Select(p => new Player() { Participant = p }).ToList(),
                 Rounds = rounds,
                 Status = GameStatus.NotStarted
