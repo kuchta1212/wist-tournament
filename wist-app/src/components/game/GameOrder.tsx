@@ -73,9 +73,6 @@ export class GameOrder extends React.Component<GameOrderProps, GameOrderState> {
     }
 
     private selected(selector: number, e: any) {
-        console.log("Selector:" + selector);
-        console.log("Event:" + e);
-        console.log("Data:" + this.data);
         if (this.data.getKeys().filter(v => v == e.target.value).length != 0) {
             alert("Ten už rozdává");
             return;

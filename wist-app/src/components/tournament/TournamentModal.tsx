@@ -51,11 +51,20 @@ export class TournamentModal extends React.Component<TournamentModalProps, Tourn
             <div className="row">
                 <h5>Přidat turnaj</h5>
                 <input type="text" className="form-control" placeholder="Jméno turnaje" value={this.state.name} onChange={(event) => this.setTournamentName(event.target.value)} aria-label="" aria-describedby="basic-addon1" />
-                <Rank selectAllPosibility={true} clickable={true} userSelected={this.userSelected.bind(this)} />
+                <Rank selectAllPosibility={true} clickable={true} userSelected={this.userSelected.bind(this)} usersSelected={this.usersSelected.bind(this)} />
                 <button type="button" className="btn btn-primary btn-lg btn-block" onClick={() => this.createTournament()}>Vytvořit</button>
                 <button type="button" className="btn btn-secondary btn-lg btn-block" onClick={ () => this.props.close()}>Zrušit</button>
             </div>
         );
+    }
+
+    private usersSelected(ids: string[], added: boolean) {
+        if (added) {
+            this.setState({ selectedUsers: this.state.selectedUsers.concat(ids) });
+
+        } else {
+            this.setState({ selectedUsers: [] });
+        }
     }
 
     private userSelected(id: string, added: boolean) {

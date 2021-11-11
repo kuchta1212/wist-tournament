@@ -9,11 +9,11 @@ import { Rank } from './../UserRank';
 
 interface ParticipantRankProps {
     tournamentId: string;
-    participants: Participant[];
-    realod: () => void;
 }
 
 interface ParticipantRankState {
+    loading: boolean;
+    participants: Participant[];
     selectedParticipant: string;
     showNewForm: boolean;
     showRemoveButton: boolean;
@@ -26,6 +26,8 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
         super(props);
 
         this.state = {
+            loading: true,
+            participants: [],
             selectedParticipant: "",
             showNewForm: false,
             clickable: false,
@@ -33,11 +35,24 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
         };
     }
 
+    public async componentDidMount() {
+        await this.getData();
+    }
+
+    private async getData() {
+        const participants = await getApi().getTournamentParticipants(this.props.tournamentId);
+        this.setState({ participants: participants, loading: false });
+    }
+
     public render() {
+        let contents = this.state.loading
+            ? <Loader />
+            : this.renderRanking()
+
         return (
             <div>
                 <h1 id="tabelLabel" >Turnajové pořadí</h1>
-                {this.renderRanking()}
+                {contents}
             </div>
         );
     }
@@ -48,9 +63,17 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
                 {this.state.showRemoveButton ? this.renderRemoveButton() : null}
                 <Table className="user-rank text-light">
                     <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th>Průměrně umístění</th>
+                            <th>Bodový medián</th>
+                            <th>Bodový průměr</th>
+                            <th>Turnajový počet bodů</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        {this.props.participants.filter(p => !p.left).sort((p1, p2) => this.sortParticipants(p1.tournamentPoints, p2.tournamentPoints)).map((participant, index) => (
+                        {this.state.participants.filter(p => !p.left).sort((p1, p2) => this.sortParticipants(p1.tournamentPoints, p2.tournamentPoints)).map((participant, index) => (
                             <tr key={participant.id} className={this.isParticipantSelected(participant.id) ? "bg-danger" : ""} onClick={() => this.onParticipantClick(participant.id)}>
                                 <td>{index + 1}.</td>
                                 <td>{participant.user.name}</td>
@@ -64,13 +87,13 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
                     </tbody>
                 </Table>
 
-                {this.state.showNewForm ? <Rank selectAllPosibility={false} clickable={true} userSelected={this.userSelected.bind(this)} /> : null}
+                {this.state.showNewForm ? <Rank selectAllPosibility={false} clickable={true} userSelected={this.userSelected.bind(this)} usersSelected={(id, added) => { return; }} /> : null}
 
                 <Table className="user-rank text-light">
                     <thead>
                     </thead>
                     <tbody>
-                        {this.props.participants.filter(p => p.left).map((participant, index) => (
+                        {this.state.participants.filter(p => p.left).map((participant, index) => (
                             <tr key={participant.id} className="participant-left">
                                 <td></td>
                                 <td>{participant.user.name}</td>
@@ -97,6 +120,7 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
                 </tr>
             </React.Fragment>
         )
@@ -109,10 +133,17 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
     }
 
     private sortParticipants(p1: TournamentPoints, p2: TournamentPoints): number {
-        //return r1.roundNumber > r2.roundNumber ? 1 : -1
-        if (p1.totalPoints > p2.totalPoints) {
+        if (p1.totalPoints < p2.totalPoints) {
             return 1;
-        } else if (p1.totalPoints < p2.totalPoints) {
+        } else if (p1.totalPoints > p2.totalPoints) {
+            return -1;
+        }
+
+        if (p1.avaragePlace == 0) {
+            return 1;
+        }
+
+        if (p2.avaragePlace == 0) {
             return -1;
         }
 
@@ -141,10 +172,6 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
         this.setState({ showNewForm: !this.state.showNewForm });
     }
 
-    private closeModal() {
-        this.setState({ showNewForm: false });
-    }
-
     private onParticipantClick(id: string) {
         if (this.isParticipantSelected(id)) {
             this.setState({ selectedParticipant: "", showRemoveButton: false });
@@ -160,11 +187,13 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
 
     private async userSelected(userId: string, added: boolean) {
         await getApi().addParticipant(this.props.tournamentId, userId);
-        this.props.realod();
+        this.setState({ loading: true });
+        await this.getData();
     }
 
     private async removeParticipant() {
         await getApi().removeParticipant(this.props.tournamentId, this.state.selectedParticipant);
-        this.props.realod();
+        this.setState({ loading: true });
+        await this.getData();
     }
 }

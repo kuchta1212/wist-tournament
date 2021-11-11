@@ -3,11 +3,17 @@ import { Dictionary } from "../../typings/Dictionary"
 import { IApi } from "./IApi";
 import { get, post, del } from "./HttpClient";
 import { convert } from "./ResponseConvertor"
-import { Bet, Round } from "../../typings/index";
+import { Bet, GameType, Participant, Round } from "../../typings/index";
 
 const API_URL = '/api';
 
 export class Api implements IApi {
+    getTournamentGamesForRound(tournamentId: string, gameType: GameType): Promise<Game[]> {
+        return convert<Game[]>(get(`${API_URL}/tournament/${tournamentId}/games`))
+    }
+    getTournamentParticipants(tournamentId: string): Promise<Participant[]> {
+        return convert<Participant[]>(get(`${API_URL}/tournament/${tournamentId}/participants`))
+    }
     async tournamentFinish(tournamentId: string): Promise<void> {
         await post(`${API_URL}/tournament/${tournamentId}/finish`);
     }

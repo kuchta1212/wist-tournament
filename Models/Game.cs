@@ -23,12 +23,13 @@
 
         public GameStatus Status { get; set; }
 
-        public Dictionary<string, int> GetResult()
+        public Dictionary<string, GamePoints> GetResult()
         {
-            var dict = new Dictionary<string, int>();
+            var dict = new Dictionary<string, GamePoints>();
             foreach(var player in this.Players)
             {
-                dict.Add(player.Id, 0);
+                var rank = this.Players.IndexOf(player);
+                dict.Add(player.Id, new GamePoints() { Rank = rank});
             }
 
             var rounds = this.Rounds.Where(r => r.Status == RoundStatus.Done);
@@ -36,28 +37,18 @@
             { 
                 foreach(var bet in round.Bets)
                 {
-                    dict[bet.Player.Id] += bet.GetResult();
+                    dict[bet.Player.Id].Points += bet.GetResult();
+                    dict[bet.Player.Id].AmountOfDecks += bet.Tip;
                 }
             }
 
             return dict;
         }
 
-        public Player GetDealer(Round round)
-        {
-            var mod = round.RoundNumber % 4;
-            if(mod == 0)
-            {
-                mod = 4;
-            }
-
-            return this.Players.First(p => p.GameRank == mod);
-        }
-
         public int GetRank(string playerId)
         {
             var result = this.GetResult();
-            var ordered = result.OrderByDescending(r => r.Value);
+            var ordered = result.OrderBy(r => r.Value);
             var rank = 1;
             foreach(var order in ordered)
             {

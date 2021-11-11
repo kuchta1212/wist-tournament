@@ -12,7 +12,8 @@ interface RoundRowProps {
 
 interface RoundRowState {
     round: Round;
-    bets: IDictionary<number>
+    bets: IDictionary<number>;
+    inputValid: IDictionary<boolean>
 }
 
 export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
@@ -31,7 +32,8 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
 
         this.state = {
             round: this.props.round,
-            bets: this.betsToDict(this.props.round.bets)
+            bets: this.betsToDict(this.props.round.bets),
+            inputValid: this.playersToDict(this.props.players),
         }
     }
 
@@ -53,6 +55,19 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
 
         for (let bet of bets) {
             result.put(bet.player.id, bet.tip);
+        }
+
+        return result;
+    }
+
+    private playersToDict(players: Player[]): IDictionary<boolean> {
+        let result = new Dictionary<boolean>();
+        if (!players) {
+            return result;
+        }
+
+        for (let player of players) {
+            result.put(player.id, true);
         }
 
         return result;
@@ -101,7 +116,7 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
                 {this.props.players.sort(p => p.gameRank).map((player) => {
                     return (
                         <td key={player.id} className={player.gameRank == this.state.round.dealerNumber ? "dealer-cell" : ""}>
-                            <input type="number" min="0" max={this.state.round.amountOfCards} value={this.getInitValue(player.id)} onChange={(event) => this.setBet(event.target.value, player.id)} />
+                            <input className={!this.state.inputValid.get(player.id) ? "bg-danger" : ""} type="number" min="0" max={this.state.round.amountOfCards} placeholder="--" value={this.state.bets.get(player.id)} onChange={(event) => this.setBet(event.target.value, player.id)} />
                         </td>
                     )
                 })}
@@ -112,12 +127,6 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
         );
     }
 
-    private getInitValue(playerId: string) {
-        return this.state.bets.contains(playerId)
-            ? this.state.bets.get(playerId)
-            : 0
-    }
-
     private changeBets() {
         let round = this.state.round;
         round.status = RoundStatus.notStarted;
@@ -125,31 +134,61 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
     }
 
     private setBet(value: string, playerId: string) {
-        const data = this.state.bets;
-        data.put(playerId, parseInt(value));
-        this.setState({ bets: data });
+        const intValue = parseInt(value);
+        if (this.validateBet(intValue)) {
+            const data = this.state.bets;
+            data.put(playerId, intValue);
+
+            if (!this.state.inputValid.get(playerId)) {
+                let inputValid = this.state.inputValid;
+                inputValid.put(playerId, true);
+                this.setState({ inputValid: inputValid, bets: data })
+            } else {
+                this.setState({ bets: data });
+            }
+        } else {
+            let inputValid = this.state.inputValid;
+            inputValid.put(playerId, false);
+            this.setState({ inputValid: inputValid })
+        }
+    }
+
+    private validateBet(value: number): boolean {
+        if (value < 0 || value > this.state.round.amountOfCards) {
+            return false;
+        }
+        
+        return true;
     }
 
     private async submitBets() {
-        this.validateBets();
-        await getApi().setBets(this.state.round.id, this.state.bets);
-        const round = await getApi().getRound(this.state.round.id);
-        this.setState({ round: round })
-    }
-
-    private validateBets() {
-        if (this.state.bets.getKeys().length == 4) {
-            return;
+        if (this.validateBets()) {
+            await getApi().setBets(this.state.round.id, this.state.bets);
+            const round = await getApi().getRound(this.state.round.id);
+            this.setState({ round: round })
+        } else {
+            alert("Zkontroluj sázky")
         }
 
-        let data = this.state.bets;
-        this.props.players.map((player) => {
-            if (!data.contains(player.id)) {
-                data.put(player.id, 0);
-            }
-        });
+    }
 
-        this.setState({ bets: data });
+    private validateBets(): boolean {
+        if (this.state.bets.getKeys().length != 4) {
+            return false;
+        }
+
+        for (let player of this.props.players) {
+            if (!this.state.inputValid.get(player.id)) {
+                return false;
+            }
+        }
+
+        const sum = this.state.bets.getValues().reduce((sum, current) => sum += current, 0)
+        if (sum == this.state.round.amountOfCards) {
+            return false;
+        }
+
+        return true;
     }
 
     private async submitResults() {

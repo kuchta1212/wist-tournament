@@ -54,6 +54,13 @@ export interface TournamentPoints {
     totalPoints: number;
 }
 
+export interface GamePoints {
+    id: string;
+    points: number;
+    amountOfDecks: number;
+    Rank: number;
+}
+
 export interface User {
     id: string;
     name: string;

@@ -11,7 +11,7 @@ namespace Wist.Models
 
         public string Name { get; set; }
 
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
 
         public List<Participant> Winners { get; set; }
     }

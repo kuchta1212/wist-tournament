@@ -22,7 +22,7 @@ export class Main extends React.Component<MainPageProps> {
                         <TournamentList />
                     </div>
                     <div className="col-lg-2">
-                        <Rank selectAllPosibility={false} clickable={false} userSelected={(id, added) => { return; }} />
+                        <Rank selectAllPosibility={false} clickable={false} userSelected={(id, added) => { return; }} usersSelected={(id, added) => { return; }}/>
                     </div>
                 </div>
             </div>

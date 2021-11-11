@@ -37,5 +37,10 @@
         Game GetGame(string gameId);
 
         Round GetRound(string roundId);
+
+        List<Participant> GetTournamentParticipants(string tournamentId);
+
+        List<Game> GetTournamentGamesForType(string tournamentId, GameType gameType);
+
     }
 }

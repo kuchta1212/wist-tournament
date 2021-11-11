@@ -59,7 +59,7 @@ class NavMenu extends React.Component<RouteComponentProps, INavMenuState> {
                         <NavLink tag={Link} className="text-light" to="/" onClick={() => this.delete()}>Smazat</NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink tag={Link} className="text-light" to={this.getLiveTournamentRoute()} onClick={() => this.delete()}>Live</NavLink>
+                        <NavLink tag={Link} className="text-success" to={this.getLiveTournamentRoute()} onClick={() => this.delete()}>Live</NavLink>
                     </NavItem>
                 </ul>
             </Collapse>

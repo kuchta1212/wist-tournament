@@ -11,6 +11,7 @@ interface RankProps {
     clickable: boolean;
     selectAllPosibility: boolean;
     userSelected: (id: string, added: boolean) => void;
+    usersSelected: (ids: string[], added: boolean) => void;
 }
 
 interface RankState {
@@ -105,16 +106,12 @@ export class Rank extends React.Component<RankProps, RankState> {
     private selectAll() {
         if (this.state.selectedUsers.length == 0) {
             const allUsersIds = this.state.users.map((user) => {
-                this.props.userSelected(user.id, true);
                 return user.id
             })
-            
+            this.props.usersSelected(allUsersIds, true);
             this.setState({ selectedUsers: this.state.selectedUsers.concat(allUsersIds) })
         } else {
-            this.state.selectedUsers.map((userId) => {
-                this.props.userSelected(userId, false);
-            });
-
+            this.props.usersSelected(this.state.selectedUsers, false);
             this.setState({selectedUsers: []})
         }
     }

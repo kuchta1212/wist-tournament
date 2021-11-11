@@ -27,7 +27,7 @@
             {
                 Id = this.Id,
                 Name = this.Name,
-                Date = this.Date,
+                Date = this.Date.ToString("dd.MM yyyy"),
                 Winners = this.Participants.OrderByDescending(p => p.TournamentPoints).Take(3).ToList()
             };
         }

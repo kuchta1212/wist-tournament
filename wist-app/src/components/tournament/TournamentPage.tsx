@@ -14,70 +14,38 @@ interface TournamentPageParams {
 }
 
 interface TournamentPageState {
-    loading: boolean;
-    tournament: Tournament;
+
 }
 
 export class TournamentPage extends React.Component<RouteComponentProps<TournamentPageParams>, TournamentPageState> {
 
     constructor(props: RouteComponentProps<TournamentPageParams>) {
         super(props);
-
-        this.state = {
-            loading: true,
-            tournament: {} as Tournament
-        }
-    }
-
-    public async componentDidMount() {
-        await this.getData();
     }
 
     public render() {
-        let contents = this.state.loading
-            ? <Loader />
-            : this.renderContent()
-
         return (
             <div className="tournament-page text-light">
-                {contents}
-            </div>
-        );
-    }
-
-    private renderContent() {
-        return (
-            <div>
                 <div className="row">
                     <div className="col">
                         <h2>První kolo</h2>
-                        <GameList games={!!this.state.tournament.games ? this.state.tournament.games.filter(g => g.type == GameType.FirstRound) : []} />
+                        <GameList type={GameType.FirstRound} tournamentId={this.props.match.params.tournamentId} />
                         <h2>Druhé kolo</h2>
-                        <GameList games={!!this.state.tournament.games ? this.state.tournament.games.filter(g => g.type == GameType.SecondRound) : []} />
+                        <GameList type={GameType.SecondRound} tournamentId={this.props.match.params.tournamentId} />
                         <h2>Třetí kolo</h2>
-                        <GameList games={!!this.state.tournament.games ? this.state.tournament.games.filter(g => g.type == GameType.ThirdRound) : []} />
+                        <GameList type={GameType.ThirdRound} tournamentId={this.props.match.params.tournamentId} />
                         <h2>Finálové kolo</h2>
-                        <GameList games={!!this.state.tournament.games ? this.state.tournament.games.filter(g => g.type == GameType.FinalRound) : []} />
+                        <GameList type={GameType.FinalRound} tournamentId={this.props.match.params.tournamentId} />
                     </div>
                     <div className="col col-lg-2">
-                        <ParticipantRank realod={this.reloadPage.bind(this)} participants={this.state.tournament.participants} tournamentId={this.state.tournament.id} />
+                        <ParticipantRank tournamentId={this.props.match.params.tournamentId} />
                     </div>
                 </div>
                 <div id="live-mode" className="row">
-                    <TournamentLive tournamentId={this.state.tournament.id} />
+                    <TournamentLive tournamentId={this.props.match.params.tournamentId} />
                 </div>
             </div>
         );
         
-    }
-
-    private async getData() {
-        const tournament = await getApi().getTournament(this.props.match.params.tournamentId);
-        this.setState({ tournament: tournament, loading: false });
-    }
-
-    private async reloadPage() {
-        this.setState({ loading: true });
-        await this.getData();
     }
 }

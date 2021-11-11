@@ -119,7 +119,7 @@
         {
             foreach (var participant in tournament.Participants)
             {
-                var gameResults = new List<int>();
+                var gameResults = new List<GamePoints>();
                 var gameRanks = new List<int>();
                 var games = this.GetParticipantGames(tournament, participant.Id);
                 foreach(var game in games)
@@ -133,9 +133,9 @@
                 {
                     participant.TournamentPoints = new TournamentPoints();
                 }
-                participant.TournamentPoints.AvaragePlace = gameRanks.Average();
-                participant.TournamentPoints.PointAvg = gameResults.Average();
-                participant.TournamentPoints.PointMedian = this.GetMedian(gameResults);
+                participant.TournamentPoints.AvaragePlace = Math.Round(gameRanks.Count > 0 ? gameRanks.Average() : 0, 2);
+                participant.TournamentPoints.PointAvg = Math.Round(gameResults.Count >  0 ? gameResults.Select(r => r.Points).Average(): 0, 2);
+                participant.TournamentPoints.PointMedian = this.GetMedian(gameResults.Select(r => r.Points).ToList());
             }
         }
 
@@ -149,6 +149,11 @@
         private int GetMedian(List<int> results)
         {
             var len = results.Count;
+            if(len == 0)
+            {
+                return 0;
+            }
+
             if (len == 1)
             {
                 return results.First();
@@ -183,7 +188,9 @@
                     }
 
                     var participant = game.Value.Players.First(p => p.Id == result.Key).Participant;
-                    participant.TournamentPoints.TotalPoints = this.GetTotalPoints(tournamentRank);
+                    var totalPoints = this.GetTotalPoints(tournamentRank);
+                    participant.TournamentPoints.TotalPoints = totalPoints;
+                    participant.User.Points += totalPoints;
                     tournamentRank++;
                 }
             }

@@ -191,5 +191,19 @@
             this.dbContextWrapper.UpdateTournament(tournament);
             return new OkResult();
         }
+
+        [HttpGet("tournament/{tournamentId}/participants")]
+        public IActionResult GetTournamentParticipants([FromRoute] string tournamentId)
+        {
+            var participants = this.dbContextWrapper.GetTournamentParticipants(tournamentId);
+            return new OkObjectResult(participants);
+        }
+
+        [HttpGet("tournament/{tournamentId}/games")]
+        public IActionResult GetTournamentGames([FromRoute] string tournamentId, [FromQuery] GameType type)
+        {
+            var games = this.dbContextWrapper.GetTournamentGamesForType(tournamentId, type);
+            return new OkObjectResult(games);
+        }
     }
 }

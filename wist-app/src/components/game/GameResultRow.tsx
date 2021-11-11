@@ -1,5 +1,5 @@
 ﻿import * as React from 'react'
-import { Player, Round, Bet, GameStatus, RoundStatus, Game } from "../../typings/index"
+import { Player, Round, Bet, GameStatus, RoundStatus, Game, GamePoints } from "../../typings/index"
 import { Dictionary, IDictionary } from '../../typings/Dictionary'
 import { getApi } from '../api/ApiFactory'
 import { Loader } from '../Loader'
@@ -9,7 +9,7 @@ interface GameResultProps {
 }
 
 interface GameResultState {
-    result: IDictionary<number>;
+    result: IDictionary<GamePoints>;
     loading: boolean;
 }
 
@@ -19,7 +19,7 @@ export class GameResultRow extends React.Component<GameResultProps, GameResultSt
         super(props);
 
         this.state = {
-            result: new Dictionary<number>(),
+            result: new Dictionary<GamePoints>(),
             loading: true
         }
     }
@@ -49,7 +49,7 @@ export class GameResultRow extends React.Component<GameResultProps, GameResultSt
         return (
             <React.Fragment>
                 {this.props.game.players.sort((p1, p2) => { return p1.gameRank > p2.gameRank ? 1 : -1 }).map((player) => {
-                    return <td key={player.id}>{this.state.result.get(player.id)}</td>
+                    return <td key={player.id}>{this.state.result.get(player.id).points}</td>
                 })}
             </React.Fragment>
         );
@@ -57,7 +57,7 @@ export class GameResultRow extends React.Component<GameResultProps, GameResultSt
 
     private async getData() {
         const gameResult = await getApi().getGameResults(this.props.game.id);
-        let stateDate = Dictionary.convert<number>(gameResult);
+        let stateDate = Dictionary.convert<GamePoints>(gameResult);
         this.setState({ result: stateDate, loading: false });
     }
 }

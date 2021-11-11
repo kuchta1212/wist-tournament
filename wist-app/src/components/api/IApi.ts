@@ -1,6 +1,6 @@
 ﻿import { User, Tournament, Game } from "../../typings";
 import { IDictionary } from "../../typings/Dictionary"
-import { Round } from "../../typings/index";
+import { GameType, Participant, Round } from "../../typings/index";
 
 export interface IApi {
     getUsers(): Promise<User[]>;
@@ -20,4 +20,6 @@ export interface IApi {
     getGameResults(gameId: string): Promise<any>;
     getRound(roundId: string): Promise<Round>;
     tournamentFinish(tournamentId: string): Promise<void>;
+    getTournamentParticipants(tournamentId: string): Promise<Participant[]>;
+    getTournamentGamesForRound(tournamentId: string, gameType: GameType): Promise<Game[]>;
 }
