@@ -1,5 +1,5 @@
 ﻿import * as React from 'react'
-import { Game, GameType } from "../../typings/index"
+import { Game, GameStatus, GameType } from "../../typings/index"
 import { getApi } from "../api/ApiFactory"
 import { Loader } from '../Loader'
 import { GameBox } from './GameBox'
@@ -43,9 +43,9 @@ export class GameList extends React.Component<GameListProps, GameListState> {
         return (
             <div>
                 <div className="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" className="btn">➕</button>
-                    <button type="button" className="btn">🔃</button>
-                    <button type="button" className="btn">🚫</button>
+                    <button title="Vytvoř" type="button" className="btn game-round-btn" onClick={() => this.createNextRound()}>➕</button>
+                    <button title="Přegeneruj" type="button" className="btn game-round-btn" onClick={() => this.reCreateGameRound()}>🔃</button>
+                    <button title="Smaž" type="button" className="btn game-round-btn" onClick={() => this.removeGameRound()}>🚫</button>
                 </div>
                 {contents}
             </div>
@@ -62,5 +62,38 @@ export class GameList extends React.Component<GameListProps, GameListState> {
                 }
             </div>
         );
+    }
+
+    private async createNextRound() {
+        if (this.state.games.length === 0) {
+            await getApi().createRoundOfGames(this.props.tournamentId, this.props.type);
+            await this.getData();
+        } else {
+            alert("Kolo už existuje");
+        }
+
+    }
+
+    private async reCreateGameRound() {
+        if (this.state.games.length === 0) {
+            alert("Kolo neexistuje");
+            return;
+        } else if (this.state.games.filter(g => g.status !== GameStatus.notStarted).length !== 0) {
+            alert("Některé hry již začali. Nejde přegenerovat");
+            return;
+        }
+
+        await getApi().createRoundOfGames(this.props.tournamentId, this.props.type);
+        await this.getData();
+    }
+
+    private async removeGameRound() {
+        if (this.state.games.filter(g => g.status !== GameStatus.notStarted).length !== 0) {
+            alert("Některé hry již začali. Nejde smazat");
+            return;
+        }
+
+        await getApi().removeGames(this.props.tournamentId, this.props.type);
+        await this.getData();
     }
 }

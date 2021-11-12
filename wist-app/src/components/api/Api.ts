@@ -8,14 +8,17 @@ import { Bet, GameType, Participant, Round } from "../../typings/index";
 const API_URL = '/api';
 
 export class Api implements IApi {
+    async createRoundOfGames(tournamentId: string, gameType: GameType): Promise<void> {
+        await post(`${API_URL}/tournament/${tournamentId}/games/create?type=${gameType}`)
+    }
+    async removeGames(tournamentId: string, gameType: GameType): Promise<void> {
+        await del(`${API_URL}/tournament/${tournamentId}/games/remove?type=${gameType}`);
+    }
     getTournamentGamesForRound(tournamentId: string, gameType: GameType): Promise<Game[]> {
-        return convert<Game[]>(get(`${API_URL}/tournament/${tournamentId}/games`))
+        return convert<Game[]>(get(`${API_URL}/tournament/${tournamentId}/games?type=${gameType}`))
     }
     getTournamentParticipants(tournamentId: string): Promise<Participant[]> {
         return convert<Participant[]>(get(`${API_URL}/tournament/${tournamentId}/participants`))
-    }
-    async tournamentFinish(tournamentId: string): Promise<void> {
-        await post(`${API_URL}/tournament/${tournamentId}/finish`);
     }
     getRound(roundId: string): Promise<Round> {
         return convert<Round>(get(`${API_URL}/tournament/game/round/${roundId}`));
@@ -28,12 +31,6 @@ export class Api implements IApi {
     }
     async createTournament(name: string, userIds: string[]): Promise<void> {
         post(`${API_URL}/tournament?name=${name}`, userIds);
-    }
-    async createNextRound(tournamentId: string): Promise<void> {
-        await post(`${API_URL}/tournament/next?tournamentId=${tournamentId}`);
-    }
-    async createFinalRound(tournamentId: string): Promise<void> {
-        await post(`${API_URL}/tournament/final?tournamentId=${tournamentId}`);
     }
     async deleteTournament(tournamentId: string): Promise<void> {
         await del(`${API_URL}/tournament/${tournamentId}`);

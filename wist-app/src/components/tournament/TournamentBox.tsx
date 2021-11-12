@@ -5,7 +5,6 @@ import newIcon from './../../images/new.svg';
 import podium from './../../images/podium.svg'
 import { TournamentModal } from './TournamentModal'
 import { TournamentPage } from './TournamentPage';
-import { TournamentControlPanel } from './TournamentControlPanel';
 import { Collapse } from 'react-collapse'
 
 interface TournamentBoxProps {

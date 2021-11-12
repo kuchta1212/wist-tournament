@@ -27,10 +27,10 @@ export class GameOrder extends React.Component<GameOrderProps, GameOrderState> {
                     <div className="input-group-prepend">
                         <label className="input-group-text" htmlFor="firstHand" >První rozdávající (neboli pochcanej)</label>
                     </div>
-                    <select className="custom-select" id="firstHand" onChange={(e) => this.selected(1, e)}>
-                        <option selected>---</option>
+                    <select className="custom-select" id="firstHand" onChange={(e) => this.selected(1, e)} defaultValue={"default"}>
+                        <option value="default">---</option>
                         {this.props.players.map((player, index) => {
-                            return <option value={player.id}>{player.participant.user.name}</option>
+                            return <option key={player.id} value={player.id}>{player.participant.user.name}</option>
                         })}
                     </select>
                 </div>
@@ -38,10 +38,10 @@ export class GameOrder extends React.Component<GameOrderProps, GameOrderState> {
                     <div className="input-group-prepend">
                         <label className="input-group-text" htmlFor="secondHand" >Druhý rozdávající</label>
                     </div>
-                    <select className="custom-select" id="secondHand" onChange={(e) => this.selected(2, e)}>
-                        <option selected>---</option>
+                    <select className="custom-select" id="secondHand" onChange={(e) => this.selected(2, e)} defaultValue={"default"}>
+                        <option value="default">---</option>
                         {this.props.players.map((player, index) => {
-                            return <option value={player.id}>{player.participant.user.name}</option>
+                            return <option key={player.id} value={player.id}>{player.participant.user.name}</option>
                         })}
                     </select>
                 </div>
@@ -49,10 +49,10 @@ export class GameOrder extends React.Component<GameOrderProps, GameOrderState> {
                     <div className="input-group-prepend">
                         <label className="input-group-text" htmlFor="thirdHand" >Třetí rozdávající</label>
                     </div>
-                    <select className="custom-select" id="thirdHand" onChange={(e) => this.selected(3, e)}>
-                        <option selected>---</option>
+                    <select className="custom-select" id="thirdHand" onChange={(e) => this.selected(3, e)} defaultValue={"default"}>
+                        <option value="default">---</option>
                         {this.props.players.map((player, index) => {
-                            return <option value={player.id}>{player.participant.user.name}</option>
+                            return <option key={player.id} value={player.id}>{player.participant.user.name}</option>
                         })}
                     </select>
                 </div>
@@ -60,10 +60,10 @@ export class GameOrder extends React.Component<GameOrderProps, GameOrderState> {
                     <div className="input-group-prepend">
                         <label className="input-group-text" htmlFor="fourthHand">Čtvrtý rozdávající (neboli taky pochcanej)</label>
                     </div>
-                    <select className="custom-select" id="fourthHand" onChange={(e) => this.selected(4, e)}>
-                        <option selected>---</option>
+                    <select className="custom-select" id="fourthHand" onChange={(e) => this.selected(4, e)} defaultValue={"default"}>
+                        <option value="default">---</option>
                         {this.props.players.map((player, index) => {
-                            return <option value={player.id}>{player.participant.user.name}</option>
+                            return <option key={player.id} value={player.id}>{player.participant.user.name}</option>
                         })}
                     </select>
                 </div>

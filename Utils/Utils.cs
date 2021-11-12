@@ -45,30 +45,55 @@
         {
             var playingParticipants = participants.Where(p => !p.Left).ToList();
             var amountOfGroups = playingParticipants.Count / 4;
-            var preSelected = playingParticipants.OrderByDescending(p => p.User.Points).Take(amountOfGroups).ToList();
-            return this.GenerateParticipantGroupsCore(playingParticipants, preSelected, amountOfGroups);
+            //var preSelected = playingParticipants.OrderByDescending(p => p.User.Points).Take(amountOfGroups).ToList();
+            return this.GenerateParticipantGroupsCore(playingParticipants, new List<Participant>(), amountOfGroups);
         }
 
-        public List<List<Participant>> GenerateParticipantGroupsCore(List<Participant> participants, List<Participant> preSelected, int amountOfGroups)
+        public List<List<Participant>> GenerateParticipantGroupsCore(List<Participant> participants, List<Participant> mustBe, int amountOfGroups)
         {
             var nonSelectedIndexes = new List<int>();
-            for (var j = preSelected.Count; j < participants.Count; j++)
+            for (var j = 0; j < participants.Count; j++)
             {
-                nonSelectedIndexes.Add(j);
+                if (!mustBe.Contains(participants[j]))
+                {
+                    nonSelectedIndexes.Add(j);
+                }
             }
 
             var groups = new List<List<Participant>>();
+            var mustBeCount = mustBe.Count;
+            var mustBeIndex = 0;
             for (var i = 0; i < amountOfGroups; i++)
             {
-                var group = new List<Participant>
+                var group = new List<Participant>();
+                if (mustBeCount > 0)
                 {
-                    preSelected[i]
-                };
-                for (var m = 0; m < 3; m++)
+                    var min = Math.Min(mustBeCount, 4);
+                    for(var j = mustBeIndex; j < min; j++)
+                    {
+                        group.Add(mustBe[j]);
+                        mustBeIndex++;
+                        mustBeCount--;
+                    }
+
+                    if(min < 4)
+                    {
+                        for (var m = 0; m < (4- min); m++)
+                        {
+                            var index = this.GetRandomIndex(nonSelectedIndexes);
+                            group.Add(participants[index]);
+                        }
+                    }
+                } 
+                else
                 {
-                    var index = this.GetRandomIndex(nonSelectedIndexes);
-                    group.Add(participants[index]);
+                    for (var m = 0; m < 4; m++)
+                    {
+                        var index = this.GetRandomIndex(nonSelectedIndexes);
+                        group.Add(participants[index]);
+                    }
                 }
+                
                 groups.Add(group);
             }
 
@@ -93,7 +118,10 @@
             {
                 foreach(var player in game.Players)
                 {
-                    dict[player.Id]++;
+                    if (dict.ContainsKey(player.Participant.Id))
+                    {
+                        dict[player.Participant.Id]++;
+                    }
                 }
             }
 
@@ -115,13 +143,13 @@
             return mustBe;
         }
 
-        public void RecalculateTournamentPoints(Tournament tournament)
+        public void RecalculateTournamentPoints(List<Participant> participants, List<Game> tournamentGames)
         {
-            foreach (var participant in tournament.Participants)
+            foreach (var participant in participants)
             {
                 var gameResults = new List<GamePoints>();
                 var gameRanks = new List<int>();
-                var games = this.GetParticipantGames(tournament, participant.Id);
+                var games = this.GetParticipantGames(tournamentGames, participant.Id);
                 foreach(var game in games)
                 {
                     var results = game.Value.GetResult();
@@ -139,9 +167,9 @@
             }
         }
 
-        private Dictionary<string, Game> GetParticipantGames(Tournament tournament, string participantId)
+        private Dictionary<string, Game> GetParticipantGames(List<Game> games, string participantId)
         {
-            return tournament.Games.
+            return games.
                 Where(g => g.Players.Any(p => p.Participant.Id == participantId))
                 .ToDictionary(g => g.Players.First(p => p.Participant.Id == participantId).Id, g => g);
         }

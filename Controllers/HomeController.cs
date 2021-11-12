@@ -59,54 +59,6 @@
             return new OkResult();
         }
 
-        [HttpPost("tournament/next")]
-        public IActionResult CreateNextRound([FromQuery]string tournamentId)
-        {
-            var tournament = this.dbContextWrapper.GetTournament(tournamentId);
-
-            this.utils.RecalculateTournamentPoints(tournament);
-
-            var participantGroups = this.utils.GenerateInitialParticipantGroups(tournament.Participants);
-
-            var type = tournament.Games.Any(g => g.Type == GameType.SecondRound) ? GameType.ThirdRound : GameType.SecondRound;
-            foreach (var participants in participantGroups)
-            {
-                var game = this.modelFactory.CreateGame(type, participants, participantGroups.IndexOf(participants));
-                if (tournament.Games == null)
-                {
-                    tournament.Games = new List<Game>();
-                }
-                tournament.Games.Add(game);
-            }
-
-            this.dbContextWrapper.UpdateTournament(tournament);
-
-            return new OkResult();
-        }
-
-        [HttpPost("tournament/final")]
-        public IActionResult CreateFinalRound([FromQuery] string tournamentId)
-        {
-            var tournament = this.dbContextWrapper.GetTournament(tournamentId);
-            this.utils.RecalculateTournamentPoints(tournament);
-
-            var participantGroups = this.utils.GenerateFinalParticipantGroups(tournament.Participants);
-
-            foreach (var participants in participantGroups)
-            {
-                var game = this.modelFactory.CreateGame(GameType.FinalRound, participants, participantGroups.IndexOf(participants));
-                if (tournament.Games == null)
-                {
-                    tournament.Games = new List<Game>();
-                }
-                tournament.Games.Add(game);
-            }
-
-            this.dbContextWrapper.UpdateTournament(tournament);
-
-            return new OkResult();
-        }
-
         [HttpDelete("tournament/{tournamentId}")]
         public IActionResult DeleteTournament([FromRoute]string tournamentId)
         {
@@ -204,6 +156,63 @@
         {
             var games = this.dbContextWrapper.GetTournamentGamesForType(tournamentId, type);
             return new OkObjectResult(games);
+        }
+
+        [HttpPost("tournament/{tournamentId}/games/create")]
+        public IActionResult CreateRoundOfGames([FromRoute] string tournamentId, [FromQuery]GameType type)
+        {
+            var games = this.dbContextWrapper.GetTournamentGamesForType(tournamentId, type);
+            if(games.Count == 0)
+            {
+                this.CreateRoundOfGamesInternal(tournamentId, type);
+            } 
+            else
+            {
+                this.RemoveRoundOfGames(tournamentId, type);
+                this.CreateRoundOfGamesInternal(tournamentId, type);
+            }
+
+            return new OkResult();
+        }
+
+        [HttpDelete("tournament/{tournamentId}/games/remove")]
+        public IActionResult RemoveGames([FromRoute] string tournamentId, [FromQuery] GameType type)
+        {
+            this.RemoveRoundOfGames(tournamentId, type);
+
+            return new OkResult();
+        }
+
+        private void CreateRoundOfGamesInternal(string tournamentId, GameType type)
+        {
+            var tournamentParticipants = this.dbContextWrapper.GetTournamentParticipants(tournamentId);
+
+            List<List<Participant>> participantGroups;
+            if( type != GameType.FirstRound)
+            {
+                var tournamentGames = this.dbContextWrapper.GetAllTournamentGames(tournamentId);
+                this.utils.RecalculateTournamentPoints(tournamentParticipants, tournamentGames);
+                participantGroups = this.utils.GenerateParticipantGroups(tournamentParticipants, tournamentGames);
+            } 
+            else
+            {
+                participantGroups = this.utils.GenerateInitialParticipantGroups(tournamentParticipants);
+            }
+
+
+            var resultGames = new List<Game>();
+            foreach (var participants in participantGroups)
+            {
+                var game = this.modelFactory.CreateGame(type, participants, participantGroups.IndexOf(participants));
+                resultGames.Add(game);
+            }
+
+            this.dbContextWrapper.AddGamesIntoTournament(tournamentId, resultGames);
+        }
+
+        private void RemoveRoundOfGames(string tournamentId, GameType type)
+        {
+            this.dbContextWrapper.RemoveRoundOfGames(tournamentId, type);
         }
     }
 }

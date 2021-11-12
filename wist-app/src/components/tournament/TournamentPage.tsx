@@ -2,7 +2,6 @@
 import { GameType, Tournament } from "../../typings/index"
 import { getApi } from './../api/ApiFactory';
 import { Loader } from './../Loader'
-import { TournamentControlPanel } from './TournamentControlPanel'
 import { GameList } from './../game/GameList'
 import { RouteComponentProps } from 'react-router-dom';
 import { ParticipantRank } from './ParticipantRank';

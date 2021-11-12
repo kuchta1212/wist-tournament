@@ -2,7 +2,6 @@
 import { Tournament } from "../../typings/index"
 import { getApi } from './../api/ApiFactory';
 import { Loader } from './../Loader'
-import { TournamentControlPanel } from './TournamentControlPanel'
 import { GameList } from './../game/GameList'
 import { RouteComponentProps, RouteProps } from 'react-router-dom';
 
@@ -38,7 +37,7 @@ export class TournamentLive extends React.Component<TournamentParam, TournamentL
 
         return (
             <div className="tournament-page text-light">
-                <p>Hello from tournament live {this.state.tournamentId}</p>
+                <h5><a id="live">Hello from tournament live {this.state.tournamentId}</a></h5>
             </div>
         );
     }

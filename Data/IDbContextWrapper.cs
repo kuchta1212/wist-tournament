@@ -42,5 +42,10 @@
 
         List<Game> GetTournamentGamesForType(string tournamentId, GameType gameType);
 
+        List<Game> GetAllTournamentGames(string tournamentId);
+
+        void AddGamesIntoTournament(string tournamentId, List<Game> games);
+
+        void RemoveRoundOfGames(string tournamentId, GameType gameType);
     }
 }

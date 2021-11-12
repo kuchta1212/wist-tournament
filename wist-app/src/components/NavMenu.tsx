@@ -44,20 +44,11 @@ class NavMenu extends React.Component<RouteComponentProps, INavMenuState> {
 
     private renderActionButtons() {
         return (
-            <Collapse className="d-sm-inline-flex flex-sm-row" isOpen={!this.state.collapsed} navbar>
+            <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
                 <ul className="navbar-nav flex-grow">
-                    <NavItem>
-                        <NavLink tag={Link} className="text-light" to={this.getTournamentRoute()} onClick={() => this.createNextRound()}>Další kolo</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink tag={Link} className="text-light" to={this.getTournamentRoute()} onClick={() => this.createFinalRound()}>Finální kolo</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink tag={Link} className="text-light" to={this.getTournamentRoute()} onClick={() => this.finishTournament()}>Ukonči turnaj</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink tag={Link} className="text-light" to="/" onClick={() => this.delete()}>Smazat</NavLink>
-                    </NavItem>
+                    {/*<NavItem>*/}
+                    {/*    <NavLink tag={Link} className="text-light" to="/" onClick={() => this.delete()}>Smazat</NavLink>*/}
+                    {/*</NavItem>*/}
                     <NavItem>
                         <NavLink tag={Link} className="text-success" to={this.getLiveTournamentRoute()} onClick={() => this.delete()}>Live</NavLink>
                     </NavItem>
@@ -66,27 +57,8 @@ class NavMenu extends React.Component<RouteComponentProps, INavMenuState> {
         );
     }
 
-    private getTournamentRoute() {
-        return "/tournament/" + this.props.location.pathname.substring(12);
-    }
-
     private getLiveTournamentRoute() {
-        return "/tournament/" + this.props.location.pathname.substring(12) + "#live-mode";
-    }
-
-    private async createNextRound() {
-        await getApi().createNextRound(this.props.location.pathname.substring(12));
-        window.location.reload();
-    }
-
-    private async finishTournament() {
-        await getApi().tournamentFinish(this.props.location.pathname.substring(12));
-        window.location.reload();
-    }
-
-    private async createFinalRound() {
-        await getApi().createFinalRound(this.props.location.pathname.substring(12));
-        window.location.reload();
+        return "/tournament/" + this.props.location.pathname.substring(12) + "#live";
     }
 
     private async delete() {

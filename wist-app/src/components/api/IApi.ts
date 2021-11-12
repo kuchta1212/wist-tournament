@@ -6,8 +6,6 @@ export interface IApi {
     getUsers(): Promise<User[]>;
     createUser(name: string): Promise<void>;
     createTournament(name: string, userIds: string[]): Promise<void>;
-    createNextRound(tournamentId: string): Promise<void>;
-    createFinalRound(tournamentId: string): Promise<void>;
     deleteTournament(tournamentId: string): Promise<void>;
     getTournament(tournamentId: string): Promise<Tournament>;
     getTournaments(): Promise<Tournament[]>;
@@ -19,7 +17,8 @@ export interface IApi {
     setBetsResult(roundId: string, betsResults: IDictionary<boolean>): Promise<void>;
     getGameResults(gameId: string): Promise<any>;
     getRound(roundId: string): Promise<Round>;
-    tournamentFinish(tournamentId: string): Promise<void>;
     getTournamentParticipants(tournamentId: string): Promise<Participant[]>;
     getTournamentGamesForRound(tournamentId: string, gameType: GameType): Promise<Game[]>;
+    createRoundOfGames(tournamentId: string, gameType: GameType): Promise<void>;
+    removeGames(tournamentId: string, gameType: GameType): Promise<void>;
 }

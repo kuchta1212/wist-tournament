@@ -94,7 +94,6 @@ export class TournamentModal extends React.Component<TournamentModalProps, Tourn
         await getApi().createTournament(this.state.name, this.state.selectedUsers);
         this.setState({ send: true });
         this.props.add();
-
     }
 
     private setTournamentName(name: string) {
