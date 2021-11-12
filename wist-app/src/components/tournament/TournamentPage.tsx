@@ -40,9 +40,9 @@ export class TournamentPage extends React.Component<RouteComponentProps<Tourname
                         <ParticipantRank tournamentId={this.props.match.params.tournamentId} />
                     </div>
                 </div>
-                <div id="live-mode" className="row">
-                    <TournamentLive tournamentId={this.props.match.params.tournamentId} />
-                </div>
+                {/*<div id="live" className="row">*/}
+                {/*    <TournamentLive tournamentId={this.props.match.params.tournamentId} />*/}
+                {/*</div>*/}
             </div>
         );
         

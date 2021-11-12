@@ -44,3 +44,8 @@
     color: inherit;
     text-decoration: none;
 }
+
+.live {
+    border-color: green;
+    /*border-width: 5px;*/
+}

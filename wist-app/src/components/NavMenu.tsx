@@ -46,11 +46,11 @@ class NavMenu extends React.Component<RouteComponentProps, INavMenuState> {
         return (
             <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
                 <ul className="navbar-nav flex-grow">
-                    {/*<NavItem>*/}
-                    {/*    <NavLink tag={Link} className="text-light" to="/" onClick={() => this.delete()}>Smazat</NavLink>*/}
-                    {/*</NavItem>*/}
                     <NavItem>
-                        <NavLink tag={Link} className="text-success" to={this.getLiveTournamentRoute()} onClick={() => this.delete()}>Live</NavLink>
+                        <NavLink tag={Link} className="text-light" to="/" onClick={() => this.delete()}>Smazat</NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink tag={Link} className="text-success" to={this.getLiveTournamentRoute()} onClick={() => this.toLive()}>Live</NavLink>
                     </NavItem>
                 </ul>
             </Collapse>
@@ -59,6 +59,10 @@ class NavMenu extends React.Component<RouteComponentProps, INavMenuState> {
 
     private getLiveTournamentRoute() {
         return "/tournament/" + this.props.location.pathname.substring(12) + "#live";
+    }
+
+    private toLive() {
+        window.location.href = "#live";
     }
 
     private async delete() {

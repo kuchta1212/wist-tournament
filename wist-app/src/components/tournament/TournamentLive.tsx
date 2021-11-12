@@ -1,9 +1,9 @@
 ﻿import * as React from 'react';
-import { Tournament } from "../../typings/index"
+import { GameType, Tournament } from "../../typings/index"
 import { getApi } from './../api/ApiFactory';
 import { Loader } from './../Loader'
-import { GameList } from './../game/GameList'
 import { RouteComponentProps, RouteProps } from 'react-router-dom';
+import { GameListLive } from '../game/GameListLive';
 
 interface TournamentLiveState {
     tournamentId: string
@@ -24,20 +24,19 @@ export class TournamentLive extends React.Component<TournamentParam, TournamentL
         }
     }
 
-    public async componentDidMount() {
-        //const id = this.props.match.params.id;
-        //const tournament = await getApi().getTournament(this.props.tournamentId);
-        //this.setState({ tournament: tournament, loading: false });
-    }
-
     public render() {
-        //let contents = this.state.loading
-        //    ? <Loader />
-        //    : <GameList games={!!this.state.tournament.games ? this.state.tournament.games : []} />
-
         return (
-            <div className="tournament-page text-light">
-                <h5><a id="live">Hello from tournament live {this.state.tournamentId}</a></h5>
+            <div className="row live">
+                <div className="col">
+                    <h2>První kolo</h2>
+                    <GameListLive type={GameType.FirstRound} tournamentId={this.props.tournamentId} />
+                    <h2>Druhé kolo</h2>
+                    <GameListLive type={GameType.SecondRound} tournamentId={this.props.tournamentId} />
+                    <h2>Třetí kolo</h2>
+                    <GameListLive type={GameType.ThirdRound} tournamentId={this.props.tournamentId} />
+                    <h2>Finálové kolo</h2>
+                    <GameListLive type={GameType.FinalRound} tournamentId={this.props.tournamentId} />
+                </div>
             </div>
         );
     }
