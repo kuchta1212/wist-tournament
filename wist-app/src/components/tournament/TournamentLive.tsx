@@ -26,16 +26,17 @@ export class TournamentLive extends React.Component<TournamentParam, TournamentL
 
     public render() {
         return (
-            <div className="row live">
+            <div className="live-page">
+                <h3>
+                    LIVE
+                    <svg height="100" width="100" className="blinking">
+                        <circle cx="50" cy="50" r="10" fill="red" />
+                    </svg>
+                </h3>
+            <div className="row">
                 <div className="col">
-                    <h2>První kolo</h2>
                     <GameListLive type={GameType.FirstRound} tournamentId={this.props.tournamentId} />
-                    <h2>Druhé kolo</h2>
-                    <GameListLive type={GameType.SecondRound} tournamentId={this.props.tournamentId} />
-                    <h2>Třetí kolo</h2>
-                    <GameListLive type={GameType.ThirdRound} tournamentId={this.props.tournamentId} />
-                    <h2>Finálové kolo</h2>
-                    <GameListLive type={GameType.FinalRound} tournamentId={this.props.tournamentId} />
+                </div>
                 </div>
             </div>
         );

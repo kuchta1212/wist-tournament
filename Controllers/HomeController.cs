@@ -183,6 +183,13 @@
             return new OkResult();
         }
 
+        [HttpGet("tournament/{tournamentId}/games/active")]
+        public IActionResult GetActiveTournamentGames([FromRoute] string tournamentId)
+        {
+            var activeGames = this.dbContextWrapper.GetActiveTournamentGames(tournamentId);
+            return new OkObjectResult(activeGames);
+        }
+
         private void CreateRoundOfGamesInternal(string tournamentId, GameType type)
         {
             var tournamentParticipants = this.dbContextWrapper.GetTournamentParticipants(tournamentId);

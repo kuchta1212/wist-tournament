@@ -33,3 +33,24 @@
 .user-rank:hover {
     cursor: pointer;
 }
+
+.blinking {
+    height: 10vmin;
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .blinking {
+        animation: blinking-spin infinite 1s linear;
+    }
+}
+
+@keyframes blinking-spin {
+    from, to {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}

@@ -247,6 +247,19 @@
             this.dbContext.SaveChanges();
         }
 
+        public List<Game> GetActiveTournamentGames(string tournamentId)
+         => this.dbContext.Tournaments
+                .Include(t => t.Games)
+                    .ThenInclude(g => g.Rounds)
+                        .ThenInclude(r => r.Bets)
+                            .ThenInclude(b => b.Player)
+                .Include(t => t.Games)
+                    .ThenInclude(g => g.Players)
+                        .ThenInclude(p => p.Participant)
+                            .ThenInclude(p => p.User)
+                .First(t => t.Id == tournamentId)?.Games
+            .Where(g => g.Status == GameStatus.Started).ToList();
+
         private void DeleteParticipants(List<Participant> participants)
         {
             foreach(var participant in participants)
@@ -310,5 +323,7 @@
 
         private User GetUser(string userId)
             => this.dbContext.WistUsers.FirstOrDefault(u => u.Id == userId);
+
+
     }
 }

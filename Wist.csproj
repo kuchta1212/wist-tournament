@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -61,6 +61,7 @@
     <None Remove="wist-app\src\components\tournament\TournamentPage.tsx" />
     <None Remove="wist-app\src\components\UserRank.tsx" />
     <None Remove="wist-app\src\images\card.svg" />
+    <None Remove="wist-app\src\images\red-dot.svg" />
     <None Remove="wist-app\src\typings\Dictionary.ts" />
     <None Remove="wist-app\src\typings\index.ts" />
   </ItemGroup>
@@ -96,6 +97,7 @@
     <TypeScriptCompile Include="wist-app\src\images\card.svg">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="wist-app\src\images\red-dot.svg" />
     <TypeScriptCompile Include="wist-app\src\typings\Dictionary.ts" />
     <TypeScriptCompile Include="wist-app\src\typings\index.ts" />
   </ItemGroup>

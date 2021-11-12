@@ -21,4 +21,5 @@ export interface IApi {
     getTournamentGamesForRound(tournamentId: string, gameType: GameType): Promise<Game[]>;
     createRoundOfGames(tournamentId: string, gameType: GameType): Promise<void>;
     removeGames(tournamentId: string, gameType: GameType): Promise<void>;
+    getTournamentActiveGames(tournamentId: string): Promise<Game[]>;
 }
