@@ -26,7 +26,7 @@ export class TournamentPage extends React.Component<RouteComponentProps<Tourname
         return (
             <div className="tournament-page text-light">
                 <div className="row">
-                    <div className="col">
+                    <div className="col-8">
                         <h2>První kolo</h2>
                         <GameList type={GameType.FirstRound} tournamentId={this.props.match.params.tournamentId} />
                         <h2>Druhé kolo</h2>
@@ -36,7 +36,7 @@ export class TournamentPage extends React.Component<RouteComponentProps<Tourname
                         <h2>Finálové kolo</h2>
                         <GameList type={GameType.FinalRound} tournamentId={this.props.match.params.tournamentId} />
                     </div>
-                    <div className="col col-lg-2">
+                    <div className="col-4">
                         <ParticipantRank tournamentId={this.props.match.params.tournamentId} />
                     </div>
                 </div>
