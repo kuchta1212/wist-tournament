@@ -90,6 +90,9 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
                 {this.state.round.bets.sort((b1, b2) => { return b1.player.gameRank > b2.player.gameRank ? 1 : -1 }).map((bet) => {
                     return <td key={bet.id} className={bet.isSuccess ? "bg-success" : "bg-danger"}>{bet.isSuccess ? bet.tip + 10 : bet.tip * (-1)}</td>
                 })}
+                <td>
+                    <button type="button" className="btn btn-light" onClick={() => this.changeBetsResults()}>Změnit výsledky</button>
+                </td>
             </React.Fragment>
         );
     }
@@ -125,6 +128,12 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
                 </td>
             </React.Fragment>
         );
+    }
+
+    private changeBetsResults() {
+        let round = this.state.round;
+        round.status = RoundStatus.betsAreSet;
+        this.setState({ round: round });
     }
 
     private changeBets() {
@@ -193,7 +202,6 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
 
     private async submitResults() {
         if (!this.validateResults()) {
-            alert("Zadej všechny výsledky");
             return;
         }
         await getApi().setBetsResult(this.state.round.id, this.results);
@@ -207,6 +215,16 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
     }
 
     private validateResults(): boolean {
-        return this.results.getKeys().length == 4;
+        if (this.results.getKeys().length != 4) {
+            alert("Zadej všechny výsledky");
+            return false;
+        }
+
+        if (this.results.getValues().filter(v => !v).length == 0) {
+            alert("Bohužel ne všichni můžou vyhrát");
+            return false;
+        }
+
+        return true;
     }
 }
