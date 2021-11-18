@@ -3,7 +3,6 @@ import { Game, RoundStatus, Round } from "../../typings/index"
 import { Table } from 'reactstrap'
 import { RoundRow } from './RoundRow'
 import { GameResultRow } from './GameResultRow'
-import { GameTableResult } from './GameTableResult'
 
 interface GameTableProps {
     game: Game;

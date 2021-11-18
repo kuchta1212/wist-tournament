@@ -29,7 +29,7 @@
             foreach(var player in this.Players)
             {
                 var rank = this.Players.IndexOf(player);
-                dict.Add(player.Id, new GamePoints() { Rank = rank});
+                dict.Add(player.Id, new GamePoints() { Rank = rank, PartialResults = new Dictionary<int, int>()});
             }
 
             var rounds = this.Rounds.Where(r => r.Status == RoundStatus.Done);
@@ -39,6 +39,12 @@
                 {
                     dict[bet.Player.Id].Points += bet.GetResult();
                     dict[bet.Player.Id].AmountOfDecks += bet.Tip;
+                    if (!dict[bet.Player.Id].PartialResults.ContainsKey(round.AmountOfCards))
+                    {
+                        dict[bet.Player.Id].PartialResults.Add(round.AmountOfCards, 0);
+                    }
+
+                    dict[bet.Player.Id].PartialResults[round.AmountOfCards] += bet.GetResult();
                 }
             }
 

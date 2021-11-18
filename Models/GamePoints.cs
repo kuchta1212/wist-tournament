@@ -9,15 +9,13 @@
 
     public class GamePoints : IComparable
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; }
-
         public int Points { get; set; }
 
         public int AmountOfDecks { get; set; }
 
         public int Rank { get; set; }
+
+        public Dictionary<int, int> PartialResults { get; set; }
 
         public int CompareTo(object obj)
         {
@@ -43,6 +41,12 @@
                 return -1;
             }
 
+            var checkRounds = this.CheckRounds(comparer);
+            if (checkRounds != 0)
+            {
+                return checkRounds;
+            }
+
             if (this.Rank > comparer.Rank)
             {
                 return 1;
@@ -54,6 +58,31 @@
             }
 
             return 1;
+        }
+
+        private int CheckRounds(GamePoints comparer)
+        {
+            int amountOfCardsToBeSkipped = 1;
+            while(this.PartialResults[amountOfCardsToBeSkipped] == comparer.PartialResults[amountOfCardsToBeSkipped])
+            {
+                amountOfCardsToBeSkipped++;
+                if(amountOfCardsToBeSkipped > 8)
+                {
+                    return 0;
+                }
+            }
+
+            if(amountOfCardsToBeSkipped < 8)
+            {
+                return this.PartialResults[amountOfCardsToBeSkipped] > comparer.PartialResults[amountOfCardsToBeSkipped]
+                ? 1
+                : -1;
+            }
+
+            return this.PartialResults[amountOfCardsToBeSkipped] > comparer.PartialResults[amountOfCardsToBeSkipped]
+                ? -1
+                : 1;
+
         }
     }
 }
