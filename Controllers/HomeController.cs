@@ -97,9 +97,12 @@
 
 
         [HttpPost("tournament/game/{gameId}/order")]
-        public IActionResult SetGameOrder([FromBody] Dictionary<string, int> hashMap, [FromRoute]string gameId)
+        public async Task<IActionResult> SetGameOrder([FromBody] Dictionary<string, int> hashMap, [FromRoute]string gameId)
         {
             this.dbContextWrapper.SetGameOrder(hashMap, gameId);
+
+            await this.hub.Clients.All.GameStarted(gameId);
+
             return new OkResult();
         }
 
@@ -211,7 +214,7 @@
         }
 
         [HttpPost("tournament/games/{gameId}/finish")]
-        public IActionResult FinishGame([FromRoute] string gameId)
+        public async Task<IActionResult> FinishGame([FromRoute] string gameId)
         {
             var game = this.dbContextWrapper.GetGame(gameId);
             game.Status = GameStatus.Finished;
@@ -221,6 +224,8 @@
             this.utils.RecalculateTournamentPoints(game, participantPoints);
 
             this.dbContextWrapper.UpdateGame(game);
+
+            await this.hub.Clients.All.GameFinished(gameId);
 
             return new OkResult();
         }

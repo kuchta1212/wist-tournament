@@ -31,7 +31,8 @@ export class GameListLive extends React.Component<GameListLiveProps, GameListLiv
 
     public async componentDidMount() {
         const games = await getApi().getTournamentActiveGames(this.props.tournamentId);
-        const hubConnection = new HubConnectionBuilder().withUrl("https://wist-grandslam.azurewebsites.net/hubs/notifications").build();
+        //const hubConnection = new HubConnectionBuilder().withUrl("https://wist-grandslam.azurewebsites.net/hubs/notifications").build();
+        const hubConnection = new HubConnectionBuilder().withUrl("https://localhost:44340/hubs/notifications").build();
 
         this.setState({ hubConnection: hubConnection, games: games, loading: false }, () => {
             this.state.hubConnection
@@ -39,7 +40,19 @@ export class GameListLive extends React.Component<GameListLiveProps, GameListLiv
                 .then(() => console.log("Connection set up"))
                 .catch(err => console.log("Error:" + err));
 
+            this.state.hubConnection.on("GameStarted", async (message) => {
+                console.log(message);
+                this.setState({ loading: true });
+                await this.getData();
+            });
+
             this.state.hubConnection.on("GameUpdate", async (message) => {
+                console.log(message);
+                this.setState({ loading: true });
+                await this.getData();
+            });
+
+            this.state.hubConnection.on("GameFinished", async (message) => {
                 console.log(message);
                 this.setState({ loading: true });
                 await this.getData();

@@ -113,6 +113,7 @@
             var dict = allParticipants.ToDictionary(p => p.Id, p => 0);
             var firstRound = games.Where(g => g.Type == GameType.FirstRound).ToList();
             var secondRound = games.Where(g => g.Type == GameType.SecondRound).ToList();
+            var mustBe = new List<Participant>();
 
             foreach(var game in firstRound)
             {
@@ -125,19 +126,24 @@
                 }
             }
 
-            var mustBe = dict.Where(p => p.Value == 0).Select(p => allParticipants.First(ap => ap.Id == p.Key)).ToList();
-
             if (secondRound.Count != 0)
             {
                 foreach (var game in secondRound)
                 {
                     foreach (var player in game.Players)
                     {
-                        dict[player.Id]++;
+                        if (dict.ContainsKey(player.Participant.Id))
+                        {
+                            dict[player.Participant.Id]++;
+                        }
                     }
                 }
 
-                mustBe.AddRange(dict.Where(p => p.Value == 1).Select(p => allParticipants.First(ap => ap.Id == p.Key)).ToList());
+                mustBe.AddRange(dict.Where(p => p.Value > 2).Select(p => allParticipants.First(ap => ap.Id == p.Key)).ToList());
+            } 
+            else
+            {
+                mustBe.AddRange(dict.Where(p => p.Value == 0).Select(p => allParticipants.First(ap => ap.Id == p.Key)).ToList());
             }
 
             return mustBe;

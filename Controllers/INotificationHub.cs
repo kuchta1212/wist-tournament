@@ -9,5 +9,9 @@
     public interface INotificationHub
     {
         Task GameUpdate(string gameId);
+
+        Task GameFinished(string gameId);
+
+        Task GameStarted(string gameId);
     }
 }

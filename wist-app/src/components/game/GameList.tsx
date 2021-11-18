@@ -3,6 +3,7 @@ import { Game, GameStatus, GameType } from "../../typings/index"
 import { getApi } from "../api/ApiFactory"
 import { Loader } from '../Loader'
 import { GameBox } from './GameBox'
+import { HubConnectionBuilder } from '@aspnet/signalr';
 import './Game.css'
 
 interface GameListProps {
@@ -13,6 +14,7 @@ interface GameListProps {
 interface GameListState {
     games: Game[];
     loading: boolean;
+    hubConnection: any;
 }
 
 export class GameList extends React.Component<GameListProps, GameListState> {
@@ -22,12 +24,42 @@ export class GameList extends React.Component<GameListProps, GameListState> {
 
         this.state = {
             games: [],
-            loading: true
+            loading: true,
+            hubConnection: null
         }
     }
 
     public async componentDidMount() {
-        await this.getData();
+        const games = await getApi().getTournamentGamesForRound(this.props.tournamentId, this.props.type);
+        //const hubConnection = new HubConnectionBuilder().withUrl("https://wist-grandslam.azurewebsites.net/hubs/notifications").build();
+        const hubConnection = new HubConnectionBuilder().withUrl("https://localhost:44340/hubs/notifications").build();
+
+        this.setState({ hubConnection: hubConnection, games: games, loading: false }, () => {
+            this.state.hubConnection
+                .start()
+                .then(() => console.log("Connection set up"))
+                .catch(err => console.log("Error:" + err));
+
+            this.state.hubConnection.on("GameStarted", async (gameId) => {
+                console.log(gameId);
+                if (this.state.games.filter(g => g.id != gameId).length > 0) {
+                    this.setState({ loading: true });
+                    await this.getData();
+                }
+                
+            });
+
+            this.state.hubConnection.on("GameFinished", async (gameId) => {
+                console.log(gameId);
+                this.setState({ loading: true });
+                if (this.state.games.filter(g => g.id != gameId).length > 0) {
+                    this.setState({ loading: true });
+                    await this.getData();
+                }
+            });
+        });
+
+
     }
 
     private async getData() {

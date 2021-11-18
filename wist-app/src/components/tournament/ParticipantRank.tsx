@@ -5,6 +5,7 @@ import { Table } from 'reactstrap';
 import { Loader } from './../Loader'
 import newIcon from './../../images/new.svg';
 import { Rank } from './../UserRank';
+import { HubConnectionBuilder } from '@aspnet/signalr';
 
 
 interface ParticipantRankProps {
@@ -18,6 +19,7 @@ interface ParticipantRankState {
     showNewForm: boolean;
     showRemoveButton: boolean;
     clickable: boolean;
+    hubConnection: any
 }
 
 export class ParticipantRank extends React.Component<ParticipantRankProps, ParticipantRankState> {
@@ -31,12 +33,28 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
             selectedParticipant: "",
             showNewForm: false,
             clickable: false,
-            showRemoveButton: false
+            showRemoveButton: false,
+            hubConnection: null
         };
     }
 
     public async componentDidMount() {
-        await this.getData();
+        const participants = await getApi().getTournamentParticipants(this.props.tournamentId);
+        //const hubConnection = new HubConnectionBuilder().withUrl("https://wist-grandslam.azurewebsites.net/hubs/notifications").build();
+        const hubConnection = new HubConnectionBuilder().withUrl("https://localhost:44340/hubs/notifications").build();
+
+        this.setState({ hubConnection: hubConnection, participants: participants, loading: false }, () => {
+            this.state.hubConnection
+                .start()
+                .then(() => console.log("Connection set up"))
+                .catch(err => console.log("Error:" + err));
+
+            this.state.hubConnection.on("GameFinished", async (message) => {
+                console.log(message);
+                this.setState({ loading: true });
+                await this.getData();
+            });
+        });
     }
 
     private async getData() {
