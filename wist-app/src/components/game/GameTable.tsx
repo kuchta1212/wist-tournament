@@ -3,6 +3,7 @@ import { Game, RoundStatus, Round } from "../../typings/index"
 import { Table } from 'reactstrap'
 import { RoundRow } from './RoundRow'
 import { GameResultRow } from './GameResultRow'
+import { GameTableResult } from './GameTableResult'
 
 interface GameTableProps {
     game: Game;
@@ -38,7 +39,7 @@ export class GameTable extends React.Component<GameTableProps, GameTableState> {
                     {this.state.rounds.filter(r => r.status == RoundStatus.done).sort((r1, r2) => { return r1.roundNumber > r2.roundNumber ? 1 : -1 }).map((round) => {
                         return <RoundRow key={round.id} round={round} players={this.props.game.players} roundFinished={this.roundFinished.bind(this)} />
                     })}
-                    <GameResultRow game={this.props.game} />
+                    <GameResultRow game={this.props.game} showResultRow={this.state.rounds.filter(r => r.status == RoundStatus.done).length == 16} />
                     {this.state.rounds.filter(r => r.status != RoundStatus.done).sort((r1, r2) => { return r1.roundNumber > r2.roundNumber ? 1 : -1 }).map((round) => {
                         return <RoundRow key={round.id} round={round} players={this.props.game.players} roundFinished={this.roundFinished.bind(this)} />
                     })}

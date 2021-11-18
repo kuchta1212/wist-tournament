@@ -124,9 +124,23 @@
         [HttpGet("tournament/game/{gameId}/result")]
         public IActionResult GetGameResult([FromRoute] string gameId)
         {
-            var gameResult = this.dbContextWrapper.GetGame(gameId).GetResult();
+            var gameResult = this.dbContextWrapper.GetGame(gameId).GetResult().ToDictionary(kv => kv.Key, kv => kv.Value.Points);
             return new OkObjectResult(gameResult);
         }
+
+        [HttpGet("tournament/games/{gameId}/result/place")]
+        public IActionResult GetGameResultPlaces([FromRoute] string gameId)
+        {
+            var game = this.dbContextWrapper.GetGame(gameId);
+            var dict = new Dictionary<string, int>();
+            foreach(var player in game.Players)
+            {
+                dict.Add(player.Id, game.GetPlace(player.Id));
+            }
+
+            return new OkObjectResult(dict);
+        }
+
 
         [HttpGet("tournament/game/round/{roundId}")]
         public IActionResult GetRound([FromRoute] string roundId)
@@ -190,6 +204,21 @@
             return new OkObjectResult(activeGames);
         }
 
+        [HttpPost("tournament/games/{gameId}/finish")]
+        public IActionResult FinishGame([FromRoute] string gameId)
+        {
+            var game = this.dbContextWrapper.GetGame(gameId);
+            game.Status = GameStatus.Finished;
+
+            var participantPoints = this.dbContextWrapper.GetParticipantPoints(gameId, game.Players.Select(p => p.Participant.Id).ToList());
+
+            this.utils.RecalculateTournamentPoints(game, participantPoints);
+
+            this.dbContextWrapper.UpdateGame(game);
+
+            return new OkResult();
+        }
+
         private void CreateRoundOfGamesInternal(string tournamentId, GameType type)
         {
             var tournamentParticipants = this.dbContextWrapper.GetTournamentParticipants(tournamentId);
@@ -198,7 +227,6 @@
             if( type != GameType.FirstRound)
             {
                 var tournamentGames = this.dbContextWrapper.GetAllTournamentGames(tournamentId);
-                this.utils.RecalculateTournamentPoints(tournamentParticipants, tournamentGames);
                 participantGroups = this.utils.GenerateParticipantGroups(tournamentParticipants, tournamentGames);
             } 
             else

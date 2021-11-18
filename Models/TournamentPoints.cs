@@ -21,6 +21,11 @@
 
         public int TotalPoints { get; set; }
 
+        public bool IsNotUsed()
+        {
+            return AvaragePlace == 0 && PointMedian == 0 && PointAvg == 0;
+        }
+
         public int CompareTo(object obj)
         {
             var comparer = (TournamentPoints)obj;

@@ -40,7 +40,7 @@ export class GameTableLive extends React.Component<GameTableLiveProps, GameTable
                         {this.state.rounds.filter(r => r.status != RoundStatus.notStarted).sort((r1, r2) => { return r1.roundNumber > r2.roundNumber ? 1 : -1 }).map((round) => {
                             return <RoundRowLive key={round.id} round={round} players={this.props.game.players} />
                         })}
-                        <GameResultRow game={this.props.game} />
+                        <GameResultRow game={this.props.game} showResultRow={false} />
                     </tbody>
                 </Table>
             </div>

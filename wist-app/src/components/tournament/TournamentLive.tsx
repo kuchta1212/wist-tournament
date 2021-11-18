@@ -35,7 +35,7 @@ export class TournamentLive extends React.Component<TournamentParam, TournamentL
                 </h3>
             <div className="row">
                 <div className="col">
-                    <GameListLive type={GameType.FirstRound} tournamentId={this.props.tournamentId} />
+                    <GameListLive tournamentId={this.props.tournamentId} />
                 </div>
                 </div>
             </div>

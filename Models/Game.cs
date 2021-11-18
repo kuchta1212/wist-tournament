@@ -45,7 +45,7 @@
             return dict;
         }
 
-        public int GetRank(string playerId)
+        public int GetPlace(string playerId)
         {
             var result = this.GetResult();
             var ordered = result.OrderBy(r => r.Value);

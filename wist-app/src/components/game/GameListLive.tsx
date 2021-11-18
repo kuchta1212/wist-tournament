@@ -7,7 +7,6 @@ import './Game.css'
 import { GameTableLive } from './GameTableLive'
 
 interface GameListLiveProps {
-    type: GameType;
     tournamentId: string;
 }
 
@@ -52,12 +51,15 @@ export class GameListLive extends React.Component<GameListLiveProps, GameListLiv
 
     public renderContent() {
         return (
-            <div className="row game-list text-light">
-                {
-                    this.state.games.map((game, index) => (
-                        <GameTableLive key={game.id} game={game} />
-                    ))
-                }
+            <div>
+                <button title="Obnovit" type="button" className="btn game-round-btn" onClick={() => this.refresh()}>🔄️</button>
+                <div className="row game-list text-light">
+                    {
+                        this.state.games.map((game, index) => (
+                            <GameTableLive key={game.id} game={game} />
+                        ))
+                    }
+                </div>
             </div>
         );
     }
@@ -68,5 +70,10 @@ export class GameListLive extends React.Component<GameListLiveProps, GameListLiv
                 Žádná hra se momentálně nehraje
             </h5>
         );
+    }
+
+    private async refresh() {
+        this.setState({ loading: true });
+        await this.getData();
     }
 }

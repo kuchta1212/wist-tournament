@@ -8,6 +8,12 @@ import { Bet, GameType, Participant, Round } from "../../typings/index";
 const API_URL = '/api';
 
 export class Api implements IApi {
+    async getGamePlaced(gameId: string): Promise<any> {
+        return convert<any>(get(`${API_URL}/tournament/games/${gameId}/result/place`));
+    }
+    async finishGame(gameId: string): Promise<void> {
+        await post(`${API_URL}/tournament/games/${gameId}/finish`);
+    }
     getTournamentActiveGames(tournamentId: string): Promise<any[]> {
         return convert<Game[]>(get(`${API_URL}/tournament/${tournamentId}/games/active`))
     }

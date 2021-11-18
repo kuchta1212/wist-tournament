@@ -49,5 +49,9 @@
         void RemoveRoundOfGames(string tournamentId, GameType gameType);
 
         List<Game> GetActiveTournamentGames(string tournamentId);
+
+        void UpdateGame(Game game);
+
+        Dictionary<string, List<int>> GetParticipantPoints(string gameId, List<string> participantIds);
     }
 }

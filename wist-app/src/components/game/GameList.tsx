@@ -42,14 +42,26 @@ export class GameList extends React.Component<GameListProps, GameListState> {
 
         return (
             <div>
-                <div className="btn-group" role="group" aria-label="Basic example">
-                    <button title="Vytvoř" type="button" className="btn game-round-btn" onClick={() => this.createNextRound()}>➕</button>
-                    <button title="Přegeneruj" type="button" className="btn game-round-btn" onClick={() => this.reCreateGameRound()}>🔃</button>
-                    <button title="Smaž" type="button" className="btn game-round-btn" onClick={() => this.removeGameRound()}>🚫</button>
-                </div>
+                {this.renderButtons()}
                 {contents}
             </div>
         );
+    }
+
+    public renderButtons() {
+        const createBtn = this.state.games.length === 0;
+        const reCreateBtn = !createBtn && this.state.games.filter(g => g.status !== GameStatus.notStarted).length === 0;
+        const refreshBtn = !createBtn;
+        const deleteBtn = !createBtn && this.state.games.filter(g => g.status !== GameStatus.notStarted).length === 0
+
+        return (
+            <div className="btn-group" role="group" aria-label="Basic example">
+                {createBtn ? <button title="Vytvoř" type="button" className="btn game-round-btn" onClick={() => this.createNextRound()}>➕</button> : null}
+                {reCreateBtn ? <button title="Přegeneruj" type="button" className="btn game-round-btn" onClick={() => this.reCreateGameRound()}>↩️</button> : null}
+                {refreshBtn ? <button title="Obnovit" type="button" className="btn game-round-btn" onClick={() => this.refresh()}>🔄️</button> : null}
+                {deleteBtn ? <button title="Smaž" type="button" className="btn game-round-btn" onClick={() => this.removeGameRound()}>🚫</button> : null}
+            </div>
+        )
     }
 
     public renderContent() {
@@ -84,6 +96,11 @@ export class GameList extends React.Component<GameListProps, GameListState> {
         }
 
         await getApi().createRoundOfGames(this.props.tournamentId, this.props.type);
+        await this.getData();
+    }
+
+    private async refresh() {
+        this.setState({ loading: true });
         await this.getData();
     }
 

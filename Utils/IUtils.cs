@@ -14,7 +14,7 @@
 
         List<List<Participant>> GenerateFinalParticipantGroups(List<Participant> participants);
 
-        void RecalculateTournamentPoints(List<Participant> participants, List<Game> games);
+        void RecalculateTournamentPoints(Game game, Dictionary<string, List<int>> participantPoints);
 
         void RecalculateTotalTournamentPoints(Tournament tournament);
     }

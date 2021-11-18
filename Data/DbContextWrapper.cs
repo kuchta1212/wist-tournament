@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using Wist.Models;
     using Microsoft.EntityFrameworkCore;
+    using Wist.Utils;
 
     public class DbContextWrapper : IDbContextWrapper
     {
@@ -183,16 +184,12 @@
             .Include(g => g.Players)
                 .ThenInclude(p => p.Participant)
                     .ThenInclude(p => p.User)
+            .Include(g => g.Players)
+                .ThenInclude(p => p.Participant)
+                    .ThenInclude(p => p.TournamentPoints)
             .Include(g => g.Rounds)
                 .ThenInclude(r => r.Bets)
             .FirstOrDefault(r => r.Id == gameId); 
-
-            if(game.Rounds.Count(r => r.Status == RoundStatus.Done) == 16 && game.Status != GameStatus.Finished)
-            {
-                game.Status = GameStatus.Finished;
-                this.dbContext.Update(game);
-                this.dbContext.SaveChanges();
-            }
 
             return game;
         }
@@ -260,6 +257,50 @@
                 .First(t => t.Id == tournamentId)?.Games
             .Where(g => g.Status == GameStatus.Started).ToList();
 
+        public void UpdateGame(Game game)
+        {
+            this.dbContext.Update(game);
+            this.dbContext.SaveChanges();
+        }
+
+        public Dictionary<string, List<int>> GetParticipantPoints(string gameId, List<string> participantIds)
+        {
+            var tournamentId = this.dbContext.Tournaments.First(t => t.Games.Any(g => g.Id == gameId)).Id;
+
+            var games = this.dbContext.Tournaments
+                .Include(t => t.Games)
+                    .ThenInclude(g => g.Rounds)
+                        .ThenInclude(r => r.Bets)
+                .Include(t => t.Games)
+                    .ThenInclude(g => g.Players)
+                        .ThenInclude(p => p.Participant)
+                .First(t => t.Id == tournamentId).Games
+                .Where(g => g.Players.Select(p => p.Participant.Id).Any(pId => participantIds.Contains(pId)));
+
+            var participantPoints = new Dictionary<string, List<int>>();
+
+            foreach(var game in games)
+            {
+                var gameResult = game.GetResult();
+                foreach(var participantId in participantIds)
+                {
+                    var playerId = game.Players.FirstOrDefault(p => p.Participant.Id == participantId)?.Id;
+                    if(!string.IsNullOrEmpty(playerId))
+                    {
+                        if(!participantPoints.ContainsKey(participantId))
+                        {
+                            participantPoints.Add(participantId, new List<int>());
+                        }
+
+                        participantPoints[participantId].Add(gameResult[playerId].Points);
+                    }
+                }
+            }
+ 
+            return participantPoints;
+        } 
+
+
         private void DeleteParticipants(List<Participant> participants)
         {
             foreach(var participant in participants)
@@ -323,7 +364,5 @@
 
         private User GetUser(string userId)
             => this.dbContext.WistUsers.FirstOrDefault(u => u.Id == userId);
-
-
     }
 }
