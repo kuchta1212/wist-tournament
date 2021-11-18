@@ -4,6 +4,7 @@ import { getApi } from "../api/ApiFactory"
 import { Loader } from '../Loader'
 import { TournamentBox } from './TournamentBox'
 import './Tournament.css'
+import { TestComponent } from './TestComponent'
 
 interface TournamentListProps {
 }

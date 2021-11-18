@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="3.1.20" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.20" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.11" />
@@ -54,6 +55,7 @@
     <None Remove="wist-app\src\components\Main.tsx" />
     <None Remove="wist-app\src\components\NewUserModal.tsx" />
     <None Remove="wist-app\src\components\tournament\ParticipantRank.tsx" />
+    <None Remove="wist-app\src\components\tournament\TestComponent.tsx" />
     <None Remove="wist-app\src\components\tournament\TournamentBox.tsx" />
     <None Remove="wist-app\src\components\tournament\TournamentList.tsx" />
     <None Remove="wist-app\src\components\tournament\TournamentLive.tsx" />
@@ -88,6 +90,7 @@
     <TypeScriptCompile Include="wist-app\src\components\Main.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\NewUserModal.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\tournament\ParticipantRank.tsx" />
+    <TypeScriptCompile Include="wist-app\src\components\tournament\TestComponent.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentBox.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentList.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentLive.tsx" />

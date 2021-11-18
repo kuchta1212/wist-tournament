@@ -5,6 +5,7 @@ import { Loader } from '../Loader'
 import { GameBox } from './GameBox'
 import './Game.css'
 import { GameTableLive } from './GameTableLive'
+import { HubConnectionBuilder } from '@aspnet/signalr';
 
 interface GameListLiveProps {
     tournamentId: string;
@@ -13,6 +14,7 @@ interface GameListLiveProps {
 interface GameListLiveState {
     games: Game[];
     loading: boolean;
+    hubConnection: any
 }
 
 export class GameListLive extends React.Component<GameListLiveProps, GameListLiveState> {
@@ -22,12 +24,27 @@ export class GameListLive extends React.Component<GameListLiveProps, GameListLiv
 
         this.state = {
             games: [],
-            loading: true
+            loading: true,
+            hubConnection: null
         }
     }
 
     public async componentDidMount() {
-        await this.getData();
+        const games = await getApi().getTournamentActiveGames(this.props.tournamentId);
+        const hubConnection = new HubConnectionBuilder().withUrl("https://wist-grandslam.azurewebsites.net/hubs/notifications").build();
+
+        this.setState({ hubConnection: hubConnection, games: games, loading: false }, () => {
+            this.state.hubConnection
+                .start()
+                .then(() => console.log("Connection set up"))
+                .catch(err => console.log("Error:" + err));
+
+            this.state.hubConnection.on("GameUpdate", async (message) => {
+                console.log(message);
+                this.setState({ loading: true });
+                await this.getData();
+            });
+        });
     }
 
     private async getData() {

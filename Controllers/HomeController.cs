@@ -2,6 +2,7 @@
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.SignalR;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -17,12 +18,14 @@
         private readonly IDbContextWrapper dbContextWrapper;
         private readonly IUtils utils;
         private readonly IModelFactory modelFactory;
+        private readonly IHubContext<Hubs, INotificationHub> hub;
 
-        public HomeController(IDbContextWrapper dbContextWrapper, IModelFactory modelFactory, IUtils utils)
+        public HomeController(IDbContextWrapper dbContextWrapper, IModelFactory modelFactory, IUtils utils, IHubContext<Hubs, INotificationHub> hub)
         {
             this.dbContextWrapper = dbContextWrapper;
             this.modelFactory = modelFactory;
             this.utils = utils;
+            this.hub = hub;
         }
 
         [HttpGet("users")]
@@ -115,9 +118,12 @@
         }
 
         [HttpPost("tournament/game/round/{roundId}/bets/results")]
-        public IActionResult SetBetsResult([FromRoute] string roundId, [FromBody] Dictionary<string, bool> hashMap)
+        public async Task<IActionResult> SetBetsResult([FromRoute] string roundId, [FromBody] Dictionary<string, bool> hashMap)
         {
             this.dbContextWrapper.SetRoundBetsResult(hashMap, roundId);
+
+            await this.hub.Clients.All.GameUpdate(roundId);
+
             return new OkResult();
         }
 

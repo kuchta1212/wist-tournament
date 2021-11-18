@@ -9,6 +9,7 @@ namespace Wist
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using System.Collections.Generic;
+    using Wist.Controllers;
     using Wist.Data;
     using Wist.Models;
     using Wist.Utils;
@@ -30,6 +31,7 @@ namespace Wist
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddControllersWithViews();
+            services.AddSignalR();
 
             services.Configure<WinnerPointsOptions>(opt =>
             {
@@ -73,6 +75,7 @@ namespace Wist
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapHub<Hubs>("/hubs/notifications");
             });
 
             app.UseSpa(spa =>
