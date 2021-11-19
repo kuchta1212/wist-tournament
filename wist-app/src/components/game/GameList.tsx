@@ -73,7 +73,14 @@ export class GameList extends React.Component<GameListProps, GameListState> {
             <div>
                 {this.renderButtons()}
                 {contents}
+                {this.props.type == GameType.FinalRound && this.state.games.filter(g => g.status != GameStatus.finished).length == 0 ? this.renderFinishTournamentButton() : null}
             </div>
+        );
+    }
+
+    private renderFinishTournamentButton() {
+        return (
+            <button title="Uzavři" type="button" className="btn btn-secondary" onClick={() => this.finishTournament()}>DOHRÁNO</button>
         );
     }
 
@@ -103,6 +110,10 @@ export class GameList extends React.Component<GameListProps, GameListState> {
                 }
             </div>
         );
+    }
+
+    private async finishTournament() {
+        await getApi().finishTournament(this.props.tournamentId);
     }
 
     private async createNextRound() {

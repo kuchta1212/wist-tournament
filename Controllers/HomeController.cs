@@ -159,11 +159,17 @@
         }
 
         [HttpPost("tournament/{tournamentId}/finish")]
-        public IActionResult FinishTournament([FromRoute] string tournamentId)
+        public async Task<IActionResult> FinishTournament([FromRoute] string tournamentId)
         {
-            var tournament = this.dbContextWrapper.GetTournament(tournamentId);
-            this.utils.RecalculateTotalTournamentPoints(tournament);
-            this.dbContextWrapper.UpdateTournament(tournament);
+            var finalRound = this.dbContextWrapper.GetTournamentGamesForFinalRound(tournamentId);
+            this.utils.RecalculateTotalTournamentPoints(finalRound);
+            foreach(var game in finalRound)
+            {
+                this.dbContextWrapper.UpdateGame(game);
+            }
+
+            await this.hub.Clients.All.TournamentFinished(tournamentId);
+
             return new OkResult();
         }
 

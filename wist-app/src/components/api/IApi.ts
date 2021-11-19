@@ -23,5 +23,6 @@ export interface IApi {
     removeGames(tournamentId: string, gameType: GameType): Promise<void>;
     getTournamentActiveGames(tournamentId: string): Promise<string[]>;
     finishGame(gameId: string): Promise<void>;
+    finishTournament(tournamentId: string);
     getGamePlaced(gameId: string): Promise<any>;
 }

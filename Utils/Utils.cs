@@ -216,9 +216,8 @@
             return results[len / 2];
         }
 
-        public void RecalculateTotalTournamentPoints(Tournament tournament)
+        public void RecalculateTotalTournamentPoints(List<Game> finalGames)
         {
-            var finalGames = tournament.Games.Where(g => g.Type == GameType.FinalRound).ToList();
             var sortedDictFinalGames = finalGames.ToDictionary(g => int.Parse(g.Name[5..]), g => g).OrderBy(g => g.Key);
 
             var tournamentRank = 1;

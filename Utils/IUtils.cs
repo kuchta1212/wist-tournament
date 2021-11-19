@@ -16,6 +16,6 @@
 
         void RecalculateTournamentPoints(Game game, Dictionary<string, List<int>> participantPoints);
 
-        void RecalculateTotalTournamentPoints(Tournament tournament);
+        void RecalculateTotalTournamentPoints(List<Game> finalRound);
     }
 }

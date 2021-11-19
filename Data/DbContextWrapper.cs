@@ -221,6 +221,21 @@
                         .ThenInclude(p => p.User)
             .First(t => t.Id == tournamentId)?.Games.Where(g => g.Type == gameType).ToList();
 
+        public List<Game> GetTournamentGamesForFinalRound(string tournamentId)
+            => this.dbContext.Tournaments
+            .Include(t => t.Games)
+                .ThenInclude(g => g.Rounds)
+                    .ThenInclude(r => r.Bets)
+            .Include(t => t.Games)
+                .ThenInclude(g => g.Players)
+                    .ThenInclude(p => p.Participant)
+                        .ThenInclude(p => p.TournamentPoints)
+            .Include(t => t.Games)
+                .ThenInclude(g => g.Players)
+                    .ThenInclude(p => p.Participant)
+                        .ThenInclude(p => p.User)
+            .First(t => t.Id == tournamentId)?.Games.Where(g => g.Type == GameType.FinalRound).ToList();
+
         public List<Game> GetAllTournamentGames(string tournamentId)
             => this.dbContext.Tournaments
                 .Include(t => t.Games)
