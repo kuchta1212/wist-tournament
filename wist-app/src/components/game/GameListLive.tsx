@@ -12,7 +12,7 @@ interface GameListLiveProps {
 }
 
 interface GameListLiveState {
-    games: Game[];
+    gamesIds: string[];
     loading: boolean;
     hubConnection: any
 }
@@ -23,7 +23,7 @@ export class GameListLive extends React.Component<GameListLiveProps, GameListLiv
         super(props);
 
         this.state = {
-            games: [],
+            gamesIds: [],
             loading: true,
             hubConnection: null
         }
@@ -34,26 +34,18 @@ export class GameListLive extends React.Component<GameListLiveProps, GameListLiv
         //const hubConnection = new HubConnectionBuilder().withUrl("https://wist-grandslam.azurewebsites.net/hubs/notifications").build();
         const hubConnection = new HubConnectionBuilder().withUrl("https://localhost:44340/hubs/notifications").build();
 
-        this.setState({ hubConnection: hubConnection, games: games, loading: false }, () => {
+        this.setState({ hubConnection: hubConnection, gamesIds: games, loading: false }, () => {
             this.state.hubConnection
                 .start()
                 .then(() => console.log("Connection set up"))
                 .catch(err => console.log("Error:" + err));
 
             this.state.hubConnection.on("GameStarted", async (message) => {
-                console.log(message);
-                this.setState({ loading: true });
-                await this.getData();
-            });
-
-            this.state.hubConnection.on("GameUpdate", async (message) => {
-                console.log(message);
                 this.setState({ loading: true });
                 await this.getData();
             });
 
             this.state.hubConnection.on("GameFinished", async (message) => {
-                console.log(message);
                 this.setState({ loading: true });
                 await this.getData();
             });
@@ -62,13 +54,13 @@ export class GameListLive extends React.Component<GameListLiveProps, GameListLiv
 
     private async getData() {
         const games = await getApi().getTournamentActiveGames(this.props.tournamentId);
-        this.setState({ games: games, loading: false });
+        this.setState({ gamesIds: games, loading: false });
     }
 
     public render() {
         let contents = this.state.loading
             ? <Loader />
-            : this.state.games.length > 0
+            : this.state.gamesIds.length > 0
                 ? this.renderContent()
                 : this.renderText();
 
@@ -85,8 +77,8 @@ export class GameListLive extends React.Component<GameListLiveProps, GameListLiv
                 <button title="Obnovit" type="button" className="btn game-round-btn" onClick={() => this.refresh()}>🔄️</button>
                 <div className="row game-list text-light">
                     {
-                        this.state.games.map((game, index) => (
-                            <GameTableLive key={game.id} game={game} />
+                        this.state.gamesIds.map((gameId) => (
+                            <GameTableLive key={gameId} gameId={gameId} />
                         ))
                     }
                 </div>

@@ -50,7 +50,6 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
                 .catch(err => console.log("Error:" + err));
 
             this.state.hubConnection.on("GameFinished", async (message) => {
-                console.log(message);
                 this.setState({ loading: true });
                 await this.getData();
             });

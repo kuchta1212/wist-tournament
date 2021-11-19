@@ -14,8 +14,8 @@ export class Api implements IApi {
     async finishGame(gameId: string): Promise<void> {
         await post(`${API_URL}/tournament/games/${gameId}/finish`);
     }
-    getTournamentActiveGames(tournamentId: string): Promise<any[]> {
-        return convert<Game[]>(get(`${API_URL}/tournament/${tournamentId}/games/active`))
+    getTournamentActiveGames(tournamentId: string): Promise<string[]> {
+        return convert<string[]>(get(`${API_URL}/tournament/${tournamentId}/games/active`))
     }
     async createRoundOfGames(tournamentId: string, gameType: GameType): Promise<void> {
         await post(`${API_URL}/tournament/${tournamentId}/games/create?type=${gameType}`)

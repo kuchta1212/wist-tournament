@@ -235,16 +235,20 @@
             var tournamentParticipants = this.dbContextWrapper.GetTournamentParticipants(tournamentId);
 
             List<List<Participant>> participantGroups;
-            if( type != GameType.FirstRound)
+            switch(type)
             {
-                var tournamentGames = this.dbContextWrapper.GetAllTournamentGames(tournamentId);
-                participantGroups = this.utils.GenerateParticipantGroups(tournamentParticipants, tournamentGames);
-            } 
-            else
-            {
-                participantGroups = this.utils.GenerateInitialParticipantGroups(tournamentParticipants);
-            }
+                case GameType.FirstRound:
+                    participantGroups = this.utils.GenerateInitialParticipantGroups(tournamentParticipants);
+                    break;
+                case GameType.FinalRound:
+                    participantGroups = this.utils.GenerateFinalParticipantGroups(tournamentParticipants);
+                    break;
+                default:
+                    var tournamentGames = this.dbContextWrapper.GetAllTournamentGames(tournamentId);
+                    participantGroups = this.utils.GenerateParticipantGroups(tournamentParticipants, tournamentGames);
+                    break;
 
+            }
 
             var resultGames = new List<Game>();
             foreach (var participants in participantGroups)

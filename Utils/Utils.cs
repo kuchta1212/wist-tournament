@@ -23,7 +23,7 @@
             var result = new List<List<Participant>>();
             var max = participants.Count / 4;
 
-            var ordered = participants.Where(p => !p.Left).OrderByDescending(p => p.TournamentPoints);
+            var ordered = participants.Where(p => !p.Left).OrderBy(p => p.TournamentPoints);
             for(var i = 0; i < max; i++)
             {
                 var list = ordered.Skip(i * 4).Take(4).ToList();

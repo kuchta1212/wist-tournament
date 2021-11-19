@@ -41,7 +41,6 @@ export class GameList extends React.Component<GameListProps, GameListState> {
                 .catch(err => console.log("Error:" + err));
 
             this.state.hubConnection.on("GameStarted", async (gameId) => {
-                console.log(gameId);
                 if (this.state.games.filter(g => g.id == gameId).length > 0) {
                     this.setState({ loading: true });
                     await this.getData();
@@ -50,7 +49,6 @@ export class GameList extends React.Component<GameListProps, GameListState> {
             });
 
             this.state.hubConnection.on("GameFinished", async (gameId) => {
-                console.log(gameId);
                 if (this.state.games.filter(g => g.id == gameId).length > 0) {
                     this.setState({ loading: true });
                     await this.getData();

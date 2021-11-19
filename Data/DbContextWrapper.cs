@@ -244,18 +244,12 @@
             this.dbContext.SaveChanges();
         }
 
-        public List<Game> GetActiveTournamentGames(string tournamentId)
+        public List<string> GetActiveTournamentGames(string tournamentId)
          => this.dbContext.Tournaments
-                .Include(t => t.Games)
-                    .ThenInclude(g => g.Rounds)
-                        .ThenInclude(r => r.Bets)
-                            .ThenInclude(b => b.Player)
-                .Include(t => t.Games)
-                    .ThenInclude(g => g.Players)
-                        .ThenInclude(p => p.Participant)
-                            .ThenInclude(p => p.User)
+                    .Include(t => t.Games)
                 .First(t => t.Id == tournamentId)?.Games
-            .Where(g => g.Status == GameStatus.Started).ToList();
+                .Where(g => g.Status == GameStatus.Started)
+                .Select(g => g.Id).ToList();
 
         public void UpdateGame(Game game)
         {

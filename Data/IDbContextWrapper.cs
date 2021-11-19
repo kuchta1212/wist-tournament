@@ -48,7 +48,7 @@
 
         void RemoveRoundOfGames(string tournamentId, GameType gameType);
 
-        List<Game> GetActiveTournamentGames(string tournamentId);
+        List<string> GetActiveTournamentGames(string tournamentId);
 
         void UpdateGame(Game game);
 
