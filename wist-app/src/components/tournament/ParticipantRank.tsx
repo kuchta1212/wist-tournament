@@ -53,6 +53,13 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
                 this.setState({ loading: true });
                 await this.getData();
             });
+
+            this.state.hubConnection.on("TournamentFinished", async (tournamentId) => {
+                if (this.props.tournamentId == tournamentId) {
+                    this.setState({ loading: true });
+                    await this.getData();
+                }
+            });
         });
     }
 

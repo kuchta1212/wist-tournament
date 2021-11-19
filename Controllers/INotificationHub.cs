@@ -13,5 +13,7 @@
         Task GameFinished(string gameId);
 
         Task GameStarted(string gameId);
+
+        Task TournamentFinished(string tournamentId);
     }
 }
