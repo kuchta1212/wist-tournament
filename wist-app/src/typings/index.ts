@@ -5,7 +5,7 @@
     participants: Participant[];
     winners: Participant[];
     games: Game[];
-    isDone: boolean;
+    status: TournamentStatus;
 }
 
 export interface Game {
@@ -86,3 +86,7 @@ export enum BetStatus {
     withResult
 }
 
+export enum TournamentStatus {
+    inProgess,
+    finished
+}

@@ -36,11 +36,11 @@ export class GameTable extends React.Component<GameTableProps, GameTableState> {
                 </thead>
                 <tbody>
                     {this.state.rounds.filter(r => r.status == RoundStatus.done).sort((r1, r2) => { return r1.roundNumber > r2.roundNumber ? 1 : -1 }).map((round) => {
-                        return <RoundRow key={round.id} round={round} players={this.props.game.players} roundFinished={this.roundFinished.bind(this)} />
+                        return <RoundRow key={round.id} round={round} players={this.props.game.players} roundFinished={this.roundFinished.bind(this)} gameStaus={this.props.game.status} />
                     })}
                     <GameResultRow game={this.props.game} showResultRow={this.state.rounds.filter(r => r.status == RoundStatus.done).length == 16} />
                     {this.state.rounds.filter(r => r.status != RoundStatus.done).sort((r1, r2) => { return r1.roundNumber > r2.roundNumber ? 1 : -1 }).map((round) => {
-                        return <RoundRow key={round.id} round={round} players={this.props.game.players} roundFinished={this.roundFinished.bind(this)} />
+                        return <RoundRow key={round.id} round={round} players={this.props.game.players} roundFinished={this.roundFinished.bind(this)} gameStaus={this.props.game.status} />
                     })}
                 </tbody>
             </Table>

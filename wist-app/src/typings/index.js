@@ -23,4 +23,9 @@ export var BetStatus;
     BetStatus[BetStatus["set"] = 1] = "set";
     BetStatus[BetStatus["withResult"] = 2] = "withResult";
 })(BetStatus || (BetStatus = {}));
+export var TournamentStatus;
+(function (TournamentStatus) {
+    TournamentStatus[TournamentStatus["inProgess"] = 0] = "inProgess";
+    TournamentStatus[TournamentStatus["finished"] = 1] = "finished";
+})(TournamentStatus || (TournamentStatus = {}));
 //# sourceMappingURL=index.js.map

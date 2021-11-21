@@ -1,5 +1,5 @@
 ﻿import * as React from 'react'
-import { Game, GameStatus, GameType } from "../../typings/index"
+import { Game, GameStatus, GameType, TournamentStatus } from "../../typings/index"
 import { getApi } from "../api/ApiFactory"
 import { Loader } from '../Loader'
 import { GameBox } from './GameBox'
@@ -9,6 +9,7 @@ import './Game.css'
 interface GameListProps {
     type: GameType;
     tournamentId: string;
+    tournamentStatus: TournamentStatus
 }
 
 interface GameListState {
@@ -73,7 +74,7 @@ export class GameList extends React.Component<GameListProps, GameListState> {
             <div>
                 {this.renderButtons()}
                 {contents}
-                {this.props.type == GameType.FinalRound && this.state.games.filter(g => g.status != GameStatus.finished).length == 0 ? this.renderFinishTournamentButton() : null}
+                {this.props.type == GameType.FinalRound && this.props.tournamentStatus == TournamentStatus.inProgess ? this.renderFinishTournamentButton() : null}
             </div>
         );
     }
@@ -90,14 +91,14 @@ export class GameList extends React.Component<GameListProps, GameListState> {
         const refreshBtn = !createBtn;
         const deleteBtn = !createBtn && this.state.games.filter(g => g.status !== GameStatus.notStarted).length === 0
 
-        return (
+        return this.props.tournamentStatus == TournamentStatus.inProgess ? (
             <div className="btn-group" role="group" aria-label="Basic example">
                 {createBtn ? <button title="Vytvoř" type="button" className="btn game-round-btn" onClick={() => this.createNextRound()}>➕</button> : null}
                 {reCreateBtn ? <button title="Přegeneruj" type="button" className="btn game-round-btn" onClick={() => this.reCreateGameRound()}>↩️</button> : null}
                 {refreshBtn ? <button title="Obnovit" type="button" className="btn game-round-btn" onClick={() => this.refresh()}>🔄️</button> : null}
                 {deleteBtn ? <button title="Smaž" type="button" className="btn game-round-btn" onClick={() => this.removeGameRound()}>🚫</button> : null}
             </div>
-        )
+        ) : null;
     }
 
     public renderContent() {

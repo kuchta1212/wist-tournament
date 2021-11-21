@@ -8,6 +8,7 @@ interface RoundRowProps {
     round: Round;
     players: Player[]
     roundFinished: (round: Round) => void;
+    gameStaus: GameStatus
 }
 
 interface RoundRowState {
@@ -90,9 +91,11 @@ export class RoundRow extends React.Component<RoundRowProps, RoundRowState> {
                 {this.state.round.bets.sort((b1, b2) => { return b1.player.gameRank > b2.player.gameRank ? 1 : -1 }).map((bet) => {
                     return <td key={bet.id} className={bet.isSuccess ? "bg-success" : "bg-danger"}>{bet.isSuccess ? bet.tip + 10 : bet.tip * (-1)}</td>
                 })}
-                <td>
-                    <button type="button" className="btn btn-light" onClick={() => this.changeBetsResults()}>Změnit výsledky</button>
-                </td>
+                {
+                    this.props.gameStaus != GameStatus.finished
+                    ? <td><button type="button" className="btn btn-light" onClick={() => this.changeBetsResults()}>Změnit výsledky</button></td>
+                    : null
+                }
             </React.Fragment>
         );
     }

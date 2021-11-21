@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import { Participant, TournamentPoints, User } from "../../typings/index"
+import { Participant, TournamentPoints, TournamentStatus } from "../../typings/index"
 import { getApi } from "./../api/ApiFactory"
 import { Table } from 'reactstrap';
 import { Loader } from './../Loader'
@@ -10,6 +10,7 @@ import { HubConnectionBuilder } from '@aspnet/signalr';
 
 interface ParticipantRankProps {
     tournamentId: string;
+    tournamentStatus: TournamentStatus
 }
 
 interface ParticipantRankState {
@@ -98,7 +99,7 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
                     </thead>
                     <tbody>
                         {this.state.participants.filter(p => !p.left).sort((p1, p2) => this.sortParticipants(p1.tournamentPoints, p2.tournamentPoints)).map((participant, index) => (
-                            <tr key={participant.id} className={this.isParticipantSelected(participant.id) ? "bg-danger" : ""} onClick={() => this.onParticipantClick(participant.id)}>
+                            <tr key={participant.id} className={this.getRowClass(participant.id, index+1)} onClick={() => this.onParticipantClick(participant.id)}>
                                 <td>{index + 1}.</td>
                                 <td>{participant.user.name}</td>
                                 <td>{participant.tournamentPoints.avaragePlace}</td>
@@ -134,7 +135,7 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
     }
 
     private renderNewRow() {
-        return (
+        return this.props.tournamentStatus === TournamentStatus.inProgess ? (
             <React.Fragment>
                 <tr>
                     <td></td>
@@ -147,7 +148,7 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
                     <td></td>
                 </tr>
             </React.Fragment>
-        )
+        ) : null;
     }
 
     private renderRemoveButton() {
@@ -197,12 +198,39 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
     }
 
     private onParticipantClick(id: string) {
+        if (this.props.tournamentStatus == TournamentStatus.finished) {
+            return;
+        }
+
         if (this.isParticipantSelected(id)) {
             this.setState({ selectedParticipant: "", showRemoveButton: false });
 
         } else {
             this.setState({ selectedParticipant: id, showRemoveButton: true });
         }
+    }
+
+    private getRowClass(participantId: string, index: number) {
+        let classes: string[] = [];
+        switch (index) {
+            case 1:
+                classes.push("text-success")
+                break;
+            case 2:
+                classes.push("text-warning")
+                break;
+            case 3:
+                classes.push("text-info")
+                break;
+            default:
+                break;
+        }
+
+        if (this.props.tournamentStatus == TournamentStatus.inProgess && this.isParticipantSelected(participantId)) {
+            classes.push("bg-danger")
+        }
+
+        return classes.join(" ");
     }
 
     private isParticipantSelected(id: string): boolean {

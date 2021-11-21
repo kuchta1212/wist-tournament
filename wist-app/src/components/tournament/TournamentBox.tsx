@@ -52,7 +52,7 @@ export class TournamentBox extends React.Component<TournamentBoxProps, Tournamen
 
     private renderTournamentBox() {
         return (
-            <Link className="link-box" to={`/tournament/${this.props.tournament.id}`}>
+            <Link className="link-box" to={`/tournament/${this.props.tournament.id}/${this.props.tournament.status}`}>
                     <div className="card tournament-box bg-secondary">
                         <div className="card-body">
                             <h5 className="card-title text-dark">{this.props.tournament.name}</h5>

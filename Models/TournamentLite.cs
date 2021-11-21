@@ -14,5 +14,7 @@ namespace Wist.Models
         public string Date { get; set; }
 
         public List<Participant> Winners { get; set; }
+
+        public TournamentStatus Status { get; set; }
     }
 }

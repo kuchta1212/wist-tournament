@@ -13,8 +13,7 @@ function App() {
            <Layout>
                 <Switch>
                     <Route exact path='/' component={Main} />
-                    <Route path="/tournament/:tournamentId" component={TournamentPage} />
-                    <Route path="/tournament/:tournamentId/live" component={TournamentLive} />
+                    <Route path="/tournament/:tournamentId/:status" component={TournamentPage} />
                     <Route path="/game-live/:gameId" component={GameLive} />
                 </Switch>
             </Layout>

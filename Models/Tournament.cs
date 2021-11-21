@@ -30,7 +30,8 @@
                 Id = this.Id,
                 Name = this.Name,
                 Date = this.Date.ToString("dd.MM yyyy"),
-                Winners = this.Participants.OrderBy(p => p.TournamentPoints).Take(3).ToList()
+                Winners = this.Participants.OrderBy(p => p.TournamentPoints).Take(3).ToList(),
+                Status = this.Status
             };
         }
     }
