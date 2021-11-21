@@ -168,6 +168,8 @@
                 this.dbContextWrapper.UpdateGame(game);
             }
 
+            this.dbContextWrapper.SetTournamentStateToFinish(tournamentId);
+
             await this.hub.Clients.All.TournamentFinished(tournamentId);
 
             return new OkResult();
@@ -195,11 +197,6 @@
             {
                 this.CreateRoundOfGamesInternal(tournamentId, type);
             } 
-            else
-            {
-                this.RemoveRoundOfGames(tournamentId, type);
-                this.CreateRoundOfGamesInternal(tournamentId, type);
-            }
 
             return new OkResult();
         }
@@ -227,13 +224,66 @@
 
             var participantPoints = this.dbContextWrapper.GetParticipantPoints(gameId, game.Players.Select(p => p.Participant.Id).ToList());
 
-            this.utils.RecalculateTournamentPoints(game, participantPoints);
+            if(game.Type != GameType.FinalRound)
+            {
+                this.utils.RecalculateTournamentPoints(game, participantPoints);
+            }
 
             this.dbContextWrapper.UpdateGame(game);
 
             await this.hub.Clients.All.GameFinished(gameId);
 
             return new OkResult();
+        }
+
+        [HttpPost("tournament/{tournamentId}/recalculate")]
+        public IActionResult Recalculate([FromRoute] string tournamentId)
+        {
+            var participants = this.dbContextWrapper.GetTournamentParticipants(tournamentId);
+            
+            foreach(var participant in participants)
+            {
+                var data = new List<Tuple<int, GamePoints>>();
+                var games = this.dbContextWrapper.GetAllParticipantsGames(participant.Id, tournamentId);
+                foreach(var game in games)
+                {
+                    var playerId = game.Players.First(p => p.Participant.Id == participant.Id).Id;
+
+                    var result = game.GetResult()[playerId];
+                    var place = game.GetPlace(playerId);
+
+                    data.Add(Tuple.Create(place, result));
+                }
+
+                participant.TournamentPoints.AvaragePlace = Math.Round(Queryable.Average(data.Select(t => t.Item1).ToArray().AsQueryable()),2);
+                participant.TournamentPoints.PointAvg = Math.Round(Queryable.Average(data.Select(t => t.Item2.Points).ToArray().AsQueryable()),2);
+                participant.TournamentPoints.PointMedian = this.GetMedian(data.Select(t => t.Item2.Points).ToList());
+
+                this.dbContextWrapper.UpdateTournamentPoints(participant.TournamentPoints);
+            }
+
+
+            return new OkResult();
+        }
+
+        private int GetMedian(List<int> results)
+        {
+            var len = results.Count;
+            if (len == 1)
+            {
+                return results.First();
+            }
+
+            var ordered = results.OrderBy(i => i).ToList();
+
+            if (len % 2 == 0)
+            {
+                var medianA = ordered[len / 2 - 1];
+                var medianB = ordered[len / 2];
+                return (medianA + medianB) / 2;
+            }
+
+            return ordered[len / 2];
         }
 
         private void CreateRoundOfGamesInternal(string tournamentId, GameType type)
@@ -268,7 +318,11 @@
 
         private void RemoveRoundOfGames(string tournamentId, GameType type)
         {
-            this.dbContextWrapper.RemoveRoundOfGames(tournamentId, type);
+            var games = this.dbContextWrapper.GetTournamentGamesForType(tournamentId, type);
+            if(games.All(g => g.Status == GameStatus.NotStarted))
+            {
+                this.dbContextWrapper.RemoveRoundOfGames(tournamentId, type);
+            }
         }
     }
 }

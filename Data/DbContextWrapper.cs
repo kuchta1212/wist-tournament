@@ -37,7 +37,8 @@
             {
                 Name = name,
                 Date = DateTime.Today.Date,
-                Participants = particiapants
+                Participants = particiapants,
+                Status = TournamentStatus.InProgress
             };
 
             var tournamentRecord = this.dbContext.Tournaments.Add(tournament);
@@ -309,6 +310,30 @@
             return participantPoints;
         } 
 
+        public List<Game> GetAllParticipantsGames(string participantId, string tournamentId)
+            => this.dbContext.Tournaments
+                .Include(t => t.Games)
+                    .ThenInclude(g => g.Rounds)
+                        .ThenInclude(r => r.Bets)
+                .Include(t => t.Games)
+                    .ThenInclude(g => g.Players)
+                        .ThenInclude(p => p.Participant)
+                .First(t => t.Id == tournamentId).Games
+                .Where(g => g.Status == GameStatus.Finished && g.Type != GameType.FinalRound && g.Players.Select(p => p.Participant.Id).Any(pId => pId == participantId)).ToList();
+
+        public void UpdateTournamentPoints(TournamentPoints points)
+        {
+            this.dbContext.Update(points);
+
+            this.dbContext.SaveChanges();
+        }
+
+        public void SetTournamentStateToFinish(string tournamentId)
+        {
+            this.dbContext.Tournaments.First(t => t.Id == tournamentId).Status = TournamentStatus.Finished;
+
+            this.dbContext.SaveChanges();
+        }
 
         private void DeleteParticipants(List<Participant> participants)
         {

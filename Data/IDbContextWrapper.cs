@@ -55,5 +55,11 @@
         Dictionary<string, List<int>> GetParticipantPoints(string gameId, List<string> participantIds);
 
         List<Game> GetTournamentGamesForFinalRound(string tournamentId);
+
+        List<Game> GetAllParticipantsGames(string participantId, string tournamentId);
+
+        void UpdateTournamentPoints(TournamentPoints points);
+
+        void SetTournamentStateToFinish(string tournamentId);
     }
 }

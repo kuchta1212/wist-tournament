@@ -21,6 +21,8 @@
 
         public List<Game> Games { get; set; }
 
+        public TournamentStatus Status { get; set; }
+
         public TournamentLite ToLiteMode()
         {
             return new TournamentLite()
@@ -28,7 +30,7 @@
                 Id = this.Id,
                 Name = this.Name,
                 Date = this.Date.ToString("dd.MM yyyy"),
-                Winners = this.Participants.OrderByDescending(p => p.TournamentPoints).Take(3).ToList()
+                Winners = this.Participants.OrderBy(p => p.TournamentPoints).Take(3).ToList()
             };
         }
     }

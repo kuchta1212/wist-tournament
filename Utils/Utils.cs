@@ -157,8 +157,8 @@
             {
 
                 var gamePoints = results[player.Id];
-
-                if(player.Participant.TournamentPoints == null || player.Participant.TournamentPoints.IsNotUsed())
+                var gamePlace = game.GetPlace(player.Id);
+                if (player.Participant.TournamentPoints == null || player.Participant.TournamentPoints.IsNotUsed())
                 {
                     if(player.Participant.TournamentPoints == null)
                     {
@@ -166,15 +166,23 @@
 
                     }
 
-                    player.Participant.TournamentPoints.AvaragePlace = game.GetPlace(player.Id);
+                    player.Participant.TournamentPoints.AvaragePlace = gamePlace;
+                    if(gamePlace == 1)
+                    {
+                        player.Participant.TournamentPoints.AmountOfVictories = 1;
+                    }
                     player.Participant.TournamentPoints.PointAvg = gamePoints.Points;
                     player.Participant.TournamentPoints.PointMedian = gamePoints.Points;
                 }
                 else
                 {
                     player.Participant.TournamentPoints.AvaragePlace = Math.Round(
-                        (player.Participant.TournamentPoints.AvaragePlace + game.GetPlace(player.Id))/2, 
+                        (player.Participant.TournamentPoints.AvaragePlace + gamePlace) /2, 
                         2);
+                    if (gamePlace == 1)
+                    {
+                        player.Participant.TournamentPoints.AmountOfVictories++;
+                    }
                     player.Participant.TournamentPoints.PointAvg = Math.Round(
                         (player.Participant.TournamentPoints.PointAvg + gamePoints.Points) / 2,
                         2);
@@ -204,16 +212,16 @@
                 return results.First();
             }
 
-            var ordered= results.OrderBy(i => i);
+            var ordered= results.OrderBy(i => i).ToList();
 
             if (len % 2 == 0)
             {
-                var medianA = results[len / 2 - 1];
-                var medianB = results[len / 2];
+                var medianA = ordered[len / 2 - 1];
+                var medianB = ordered[len / 2];
                 return (medianA + medianB) / 2;
             }
 
-            return results[len / 2];
+            return ordered[len / 2];
         }
 
         public void RecalculateTotalTournamentPoints(List<Game> finalGames)

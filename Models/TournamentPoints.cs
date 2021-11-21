@@ -15,6 +15,8 @@
 
         public double AvaragePlace { get; set; }
 
+        public int AmountOfVictories { get; set; }
+
         public int PointMedian { get; set; }
 
         public double PointAvg { get; set; }
@@ -30,12 +32,32 @@
         {
             var comparer = (TournamentPoints)obj;
 
+            if(this.TotalPoints > comparer.TotalPoints)
+            {
+                return -1;
+            }
+
+            if(this.TotalPoints < comparer.TotalPoints)
+            {
+                return 1;
+            }
+
             if (this.AvaragePlace > comparer.AvaragePlace)
             {
                 return 1;
             }
 
             if (this.AvaragePlace < comparer.AvaragePlace)
+            {
+                return -1;
+            }
+
+            if (this.AmountOfVictories < comparer.AmountOfVictories)
+            {
+                return 1;
+            }
+
+            if (this.AmountOfVictories > comparer.AmountOfVictories)
             {
                 return -1;
             }
