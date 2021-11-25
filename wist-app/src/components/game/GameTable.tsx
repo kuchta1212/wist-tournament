@@ -29,7 +29,7 @@ export class GameTable extends React.Component<GameTableProps, GameTableState> {
                     <tr>
                         <th>#</th>
                         {this.props.game.players.sort((p1, p2) => { return p1.gameRank > p2.gameRank ? 1 : -1 }).map((player, index) => (
-                            <th key={player.id}>{player.participant.user.name}</th>
+                            <th className="game-live-table-header" key={player.id}>{player.participant.user.name}</th>
                         ))}
                         <th/>
                     </tr>

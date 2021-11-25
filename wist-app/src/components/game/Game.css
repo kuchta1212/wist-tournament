@@ -21,3 +21,9 @@
 .game-round-btn:hover {
     border-color: black;
 }
+
+.game-live-table-header {
+    position: sticky;
+    top: 0;
+    background: #282c34 !important;
+}
