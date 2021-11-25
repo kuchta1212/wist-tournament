@@ -92,6 +92,7 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
                             <th></th>
                             <th></th>
                             <th>Průměrně umístění</th>
+                            <th>Počet vítězství</th>
                             <th>Bodový medián</th>
                             <th>Bodový průměr</th>
                             <th>Turnajový počet bodů</th>
@@ -103,6 +104,7 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
                                 <td>{index + 1}.</td>
                                 <td>{participant.user.name}</td>
                                 <td>{participant.tournamentPoints.avaragePlace}</td>
+                                <td>{participant.tournamentPoints.amountOfVictories}</td>
                                 <td>{participant.tournamentPoints.pointMedian}</td>
                                 <td>{participant.tournamentPoints.pointAvg}</td>
                                 <td>{participant.tournamentPoints.totalPoints}</td>
@@ -123,6 +125,7 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
                                 <td></td>
                                 <td>{participant.user.name}</td>
                                 <td>{participant.tournamentPoints.avaragePlace}</td>
+                                <td>{participant.tournamentPoints.amountOfVictories}</td>
                                 <td>{participant.tournamentPoints.pointMedian}</td>
                                 <td>{participant.tournamentPoints.pointAvg}</td>
                                 <td>{participant.tournamentPoints.totalPoints}</td>

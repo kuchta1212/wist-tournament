@@ -52,6 +52,7 @@ export interface TournamentPoints {
     pointMedian: number;
     pointAvg: number;
     totalPoints: number;
+    amountOfVictories: number;
 }
 
 export interface User {
