@@ -41,8 +41,8 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
 
     public async componentDidMount() {
         const participants = await getApi().getTournamentParticipants(this.props.tournamentId);
-        //const hubConnection = new HubConnectionBuilder().withUrl("https://wist-grandslam.azurewebsites.net/hubs/notifications").build();
-        const hubConnection = new HubConnectionBuilder().withUrl("https://localhost:44340/hubs/notifications").build();
+        const hubConnection = new HubConnectionBuilder().withUrl("https://wist-grandslam.azurewebsites.net/hubs/notifications").build();
+        //const hubConnection = new HubConnectionBuilder().withUrl("https://localhost:44340/hubs/notifications").build();
 
         this.setState({ hubConnection: hubConnection, participants: participants, loading: false }, () => {
             this.state.hubConnection

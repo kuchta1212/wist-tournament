@@ -31,8 +31,8 @@ export class GameListLive extends React.Component<GameListLiveProps, GameListLiv
 
     public async componentDidMount() {
         const games = await getApi().getTournamentActiveGames(this.props.tournamentId);
-        //const hubConnection = new HubConnectionBuilder().withUrl("https://wist-grandslam.azurewebsites.net/hubs/notifications").build();
-        const hubConnection = new HubConnectionBuilder().withUrl("https://localhost:44340/hubs/notifications").build();
+        const hubConnection = new HubConnectionBuilder().withUrl("https://wist-grandslam.azurewebsites.net/hubs/notifications").build();
+        //const hubConnection = new HubConnectionBuilder().withUrl("https://localhost:44340/hubs/notifications").build();
 
         this.setState({ hubConnection: hubConnection, gamesIds: games, loading: false }, () => {
             this.state.hubConnection

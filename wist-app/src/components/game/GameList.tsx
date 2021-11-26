@@ -32,8 +32,8 @@ export class GameList extends React.Component<GameListProps, GameListState> {
 
     public async componentDidMount() {
         const games = await getApi().getTournamentGamesForRound(this.props.tournamentId, this.props.type);
-        //const hubConnection = new HubConnectionBuilder().withUrl("https://wist-grandslam.azurewebsites.net/hubs/notifications").build();
-        const hubConnection = new HubConnectionBuilder().withUrl("https://localhost:44340/hubs/notifications").build();
+        const hubConnection = new HubConnectionBuilder().withUrl("https://wist-grandslam.azurewebsites.net/hubs/notifications").build();
+        //const hubConnection = new HubConnectionBuilder().withUrl("https://localhost:44340/hubs/notifications").build();
 
         this.setState({ hubConnection: hubConnection, games: games, loading: false }, () => {
             this.state.hubConnection

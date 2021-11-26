@@ -32,8 +32,8 @@ export class GameTableLive extends React.Component<GameTableLiveProps, GameTable
 
     public async componentDidMount() {
         const game = await getApi().getGame(this.props.gameId);
-        //const hubConnection = new HubConnectionBuilder().withUrl("https://wist-grandslam.azurewebsites.net/hubs/notifications").build();
-        const hubConnection = new HubConnectionBuilder().withUrl("https://localhost:44340/hubs/notifications").build();
+        const hubConnection = new HubConnectionBuilder().withUrl("https://wist-grandslam.azurewebsites.net/hubs/notifications").build();
+        //const hubConnection = new HubConnectionBuilder().withUrl("https://localhost:44340/hubs/notifications").build();
 
         this.setState({ hubConnection: hubConnection, game: game, loading: false }, () => {
             this.state.hubConnection
