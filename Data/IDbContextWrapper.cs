@@ -52,7 +52,7 @@
 
         void UpdateGame(Game game);
 
-        Dictionary<string, List<int>> GetParticipantPoints(string gameId, List<string> participantIds);
+        Dictionary<string, List<PlayerResult>> GetParticipantPoints(string gameId, List<string> participantIds);
 
         List<Game> GetTournamentGamesForFinalRound(string tournamentId);
 

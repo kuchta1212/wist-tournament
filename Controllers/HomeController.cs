@@ -19,13 +19,15 @@
         private readonly IUtils utils;
         private readonly IModelFactory modelFactory;
         private readonly IHubContext<Hubs, INotificationHub> hub;
+        private readonly IGameCalculator gameCalculator;
 
-        public HomeController(IDbContextWrapper dbContextWrapper, IModelFactory modelFactory, IUtils utils, IHubContext<Hubs, INotificationHub> hub)
+        public HomeController(IDbContextWrapper dbContextWrapper, IModelFactory modelFactory, IUtils utils, IHubContext<Hubs, INotificationHub> hub, IGameCalculator gameCalculator)
         {
             this.dbContextWrapper = dbContextWrapper;
             this.modelFactory = modelFactory;
             this.utils = utils;
             this.hub = hub;
+            this.gameCalculator = gameCalculator;
         }
 
         [HttpGet("users")]
@@ -157,7 +159,7 @@
         [HttpGet("tournament/game/{gameId}/result")]
         public IActionResult GetGameResult([FromRoute] string gameId)
         {
-            var gameResult = this.dbContextWrapper.GetGame(gameId).GetResult().ToDictionary(kv => kv.Key, kv => kv.Value.Points);
+            var gameResult = this.gameCalculator.GetResult(this.dbContextWrapper.GetGame(gameId)).ToDictionary(kv => kv.Key, kv => kv.Value.Points);
             return new OkObjectResult(gameResult);
         }
 
@@ -168,7 +170,7 @@
             var dict = new Dictionary<string, int>();
             foreach(var player in game.Players)
             {
-                dict.Add(player.Id, game.GetPlace(player.Id));
+                dict.Add(player.Id, this.gameCalculator.GetPlace(player.Id, game));
             }
 
             return new OkObjectResult(dict);
@@ -260,55 +262,55 @@
             return new OkResult();
         }
 
-        [HttpPost("tournament/{tournamentId}/recalculate")]
-        public IActionResult Recalculate([FromRoute] string tournamentId)
-        {
-            var participants = this.dbContextWrapper.GetTournamentParticipants(tournamentId);
+        //[HttpPost("tournament/{tournamentId}/recalculate")]
+        //public IActionResult Recalculate([FromRoute] string tournamentId)
+        //{
+        //    var participants = this.dbContextWrapper.GetTournamentParticipants(tournamentId);
             
-            foreach(var participant in participants)
-            {
-                var data = new List<Tuple<int, GamePoints>>();
-                var games = this.dbContextWrapper.GetAllParticipantsGames(participant.Id, tournamentId);
-                foreach(var game in games)
-                {
-                    var playerId = game.Players.First(p => p.Participant.Id == participant.Id).Id;
+        //    foreach(var participant in participants)
+        //    {
+        //        var data = new List<Tuple<int, GamePoints>>();
+        //        var games = this.dbContextWrapper.GetAllParticipantsGames(participant.Id, tournamentId);
+        //        foreach(var game in games)
+        //        {
+        //            var playerId = game.Players.First(p => p.Participant.Id == participant.Id).Id;
 
-                    var result = game.GetResult()[playerId];
-                    var place = game.GetPlace(playerId);
+        //            var result = game.GetResult()[playerId];
+        //            var place = game.GetPlace(playerId);
 
-                    data.Add(Tuple.Create(place, result));
-                }
+        //            data.Add(Tuple.Create(place, result));
+        //        }
 
-                participant.TournamentPoints.AvaragePlace = Math.Round(Queryable.Average(data.Select(t => t.Item1).ToArray().AsQueryable()),2);
-                participant.TournamentPoints.PointAvg = Math.Round(Queryable.Average(data.Select(t => t.Item2.Points).ToArray().AsQueryable()),2);
-                participant.TournamentPoints.PointMedian = this.GetMedian(data.Select(t => t.Item2.Points).ToList());
+        //        participant.TournamentPoints.AvaragePlace = Math.Round(Queryable.Average(data.Select(t => t.Item1).ToArray().AsQueryable()),2);
+        //        participant.TournamentPoints.PointAvg = Math.Round(Queryable.Average(data.Select(t => t.Item2.Points).ToArray().AsQueryable()),2);
+        //        participant.TournamentPoints.PointMedian = this.GetMedian(data.Select(t => t.Item2.Points).ToList());
 
-                this.dbContextWrapper.UpdateTournamentPoints(participant.TournamentPoints);
-            }
+        //        this.dbContextWrapper.UpdateTournamentPoints(participant.TournamentPoints);
+        //    }
 
 
-            return new OkResult();
-        }
+        //    return new OkResult();
+        //}
 
-        private int GetMedian(List<int> results)
-        {
-            var len = results.Count;
-            if (len == 1)
-            {
-                return results.First();
-            }
+        //private int GetMedian(List<int> results)
+        //{
+        //    var len = results.Count;
+        //    if (len == 1)
+        //    {
+        //        return results.First();
+        //    }
 
-            var ordered = results.OrderBy(i => i).ToList();
+        //    var ordered = results.OrderBy(i => i).ToList();
 
-            if (len % 2 == 0)
-            {
-                var medianA = ordered[len / 2 - 1];
-                var medianB = ordered[len / 2];
-                return (medianA + medianB) / 2;
-            }
+        //    if (len % 2 == 0)
+        //    {
+        //        var medianA = ordered[len / 2 - 1];
+        //        var medianB = ordered[len / 2];
+        //        return (medianA + medianB) / 2;
+        //    }
 
-            return ordered[len / 2];
-        }
+        //    return ordered[len / 2];
+        //}
 
         private void CreateRoundOfGamesInternal(string tournamentId, GameType type)
         {

@@ -11,11 +11,13 @@
     {
         private readonly Random random;
         private readonly IOptions<WinnerPointsOptions> winnerPointOptions;
+        private readonly IGameCalculator gameCalculator;
 
-        public Utils(IOptions<WinnerPointsOptions> winnerPointOptions)
+        public Utils(IOptions<WinnerPointsOptions> winnerPointOptions, IGameCalculator gameCalculator)
         {
             this.random = new Random();
             this.winnerPointOptions = winnerPointOptions;
+            this.gameCalculator = gameCalculator;
         }
 
         public List<List<Participant>> GenerateFinalParticipantGroups(List<Participant> participants)
@@ -171,15 +173,16 @@
             return mustBe;
         }
 
-        public void RecalculateTournamentPoints(Game game, Dictionary<string, List<int>> participantPoints)
+        public void RecalculateTournamentPoints(Game game, Dictionary<string, List<PlayerResult>> participantPoints)
         {
-            var results = game.GetResult();
+            var results = this.gameCalculator.GetResult(game);
+            var places = this.gameCalculator.GetPlaces(results);
 
             foreach (var player in game.Players)
             {
 
                 var gamePoints = results[player.Id];
-                var gamePlace = game.GetPlace(player.Id);
+                var gamePlace = places[player.Id];
                 if (player.Participant.TournamentPoints == null || player.Participant.TournamentPoints.IsNotUsed())
                 {
                     if(player.Participant.TournamentPoints == null)
@@ -198,17 +201,13 @@
                 }
                 else
                 {
-                    player.Participant.TournamentPoints.AvaragePlace = Math.Round(
-                        (player.Participant.TournamentPoints.AvaragePlace + gamePlace) /2, 
-                        2);
+                    player.Participant.TournamentPoints.AvaragePlace = this.GetAvg(participantPoints[player.Participant.Id].Select(pr => pr.Place).ToList(), gamePlace);
                     if (gamePlace == 1)
                     {
                         player.Participant.TournamentPoints.AmountOfVictories++;
                     }
-                    player.Participant.TournamentPoints.PointAvg = Math.Round(
-                        (player.Participant.TournamentPoints.PointAvg + gamePoints.Points) / 2,
-                        2);
-                    player.Participant.TournamentPoints.PointMedian = this.GetMedian(participantPoints[player.Participant.Id], gamePoints.Points);
+                    player.Participant.TournamentPoints.PointAvg = this.GetAvg(participantPoints[player.Participant.Id].Select(pr => pr.Points).ToList(), gamePoints.Points);
+                    player.Participant.TournamentPoints.PointMedian = this.GetMedian(participantPoints[player.Participant.Id].Select(pr => pr.Points).ToList(), gamePoints.Points);
                 }
             }
         }
@@ -218,6 +217,12 @@
             return games.
                 Where(g => g.Players.Any(p => p.Participant.Id == participantId))
                 .ToDictionary(g => g.Players.First(p => p.Participant.Id == participantId).Id, g => g);
+        }
+
+        private double GetAvg(List<int> results, int actualOne)
+        {
+            results.Add(actualOne);
+            return Math.Round(results.Average(), 2);
         }
 
         private int GetMedian(List<int> results, int actualOne)
@@ -253,7 +258,7 @@
             var tournamentRank = 1;
             foreach(var game in sortedDictFinalGames)
             {
-                var gameResult = game.Value.GetResult().OrderBy(r => r.Value);
+                var gameResult = this.gameCalculator.GetResult(game.Value).OrderBy(r => r.Value);
                 foreach(var result in gameResult)
                 {
                     if(tournamentRank > 20)

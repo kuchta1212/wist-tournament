@@ -12,11 +12,13 @@
     {
         private readonly WistDbContext dbContext;
         private readonly IModelFactory modelFactory;
+        private readonly IGameCalculator gameCalculator;
 
-        public DbContextWrapper(WistDbContext dbContext, IModelFactory modelFactory)
+        public DbContextWrapper(WistDbContext dbContext, IModelFactory modelFactory, IGameCalculator gameCalculator)
         {
             this.dbContext = dbContext;
             this.modelFactory = modelFactory;
+            this.gameCalculator = gameCalculator;
         }
 
         public void CreateGame(List<string> participantsIds, GameType type, string tournamentId)
@@ -273,7 +275,7 @@
             this.dbContext.SaveChanges();
         }
 
-        public Dictionary<string, List<int>> GetParticipantPoints(string gameId, List<string> participantIds)
+        public Dictionary<string, List<PlayerResult>> GetParticipantPoints(string gameId, List<string> participantIds)
         {
             var tournamentId = this.dbContext.Tournaments.First(t => t.Games.Any(g => g.Id == gameId)).Id;
 
@@ -287,11 +289,12 @@
                 .First(t => t.Id == tournamentId).Games
                 .Where(g => g.Players.Select(p => p.Participant.Id).Any(pId => participantIds.Contains(pId)));
 
-            var participantPoints = new Dictionary<string, List<int>>();
+            var participantPoints = new Dictionary<string, List<PlayerResult>>();
 
             foreach(var game in games)
             {
-                var gameResult = game.GetResult();
+                var gameResult = this.gameCalculator.GetResult(game);
+                var gamePlaces = this.gameCalculator.GetPlaces(gameResult);
                 foreach(var participantId in participantIds)
                 {
                     var playerId = game.Players.FirstOrDefault(p => p.Participant.Id == participantId)?.Id;
@@ -299,10 +302,10 @@
                     {
                         if(!participantPoints.ContainsKey(participantId))
                         {
-                            participantPoints.Add(participantId, new List<int>());
+                            participantPoints.Add(participantId, new List<PlayerResult>());
                         }
 
-                        participantPoints[participantId].Add(gameResult[playerId].Points);
+                        participantPoints[participantId].Add(new PlayerResult() { Points = gameResult[playerId].Points, Place = gamePlaces[playerId] });
                     }
                 }
             }

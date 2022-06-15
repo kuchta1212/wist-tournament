@@ -16,7 +16,7 @@
 
         List<List<Participant>> GenerateFinalParticipantGroups(List<Participant> participants);
 
-        void RecalculateTournamentPoints(Game game, Dictionary<string, List<int>> participantPoints);
+        void RecalculateTournamentPoints(Game game, Dictionary<string, List<PlayerResult>> participantPoints);
 
         void RecalculateTotalTournamentPoints(List<Game> finalRound);
     }

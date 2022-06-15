@@ -41,6 +41,7 @@ namespace Wist
 
             services.AddTransient<IDbContextWrapper, DbContextWrapper>();
             services.AddTransient<IModelFactory, ModelFactory>();
+            services.AddTransient<IGameCalculator, GameCalculator>();
             services.AddTransient<IUtils, Utils.Utils>();
 
             // In production, the React files will be served from this directory
