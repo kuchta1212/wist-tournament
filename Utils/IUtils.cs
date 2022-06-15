@@ -10,6 +10,8 @@
     {
         List<List<Participant>> GenerateInitialParticipantGroups(List<Participant> participants);
 
+        List<List<Participant>> GetInitialParticipantGroups(List<Participant> participants, List<List<string>> tables);
+
         List<List<Participant>> GenerateParticipantGroups(List<Participant> participants, List<Game> games);
 
         List<List<Participant>> GenerateFinalParticipantGroups(List<Participant> participants);

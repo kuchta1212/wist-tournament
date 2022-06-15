@@ -62,6 +62,30 @@
             return new OkResult();
         }
 
+        [HttpPost("tournament/manual")]
+        public IActionResult CreateTournament([FromQuery] string name, [FromBody] List<List<string>> tables)
+        {
+            var usersIds = new List<string>();
+            tables.ForEach(table => table.ForEach(userId => usersIds.Add(userId)));
+
+            var tournament = this.dbContextWrapper.CreateTournament(name, usersIds);
+            var participantGroups = this.utils.GetInitialParticipantGroups(tournament.Participants, tables);
+
+            foreach (var participants in participantGroups)
+            {
+                var game = this.modelFactory.CreateGame(GameType.FirstRound, participants, participantGroups.IndexOf(participants));
+                if (tournament.Games == null)
+                {
+                    tournament.Games = new List<Game>();
+                }
+                tournament.Games.Add(game);
+            }
+
+            this.dbContextWrapper.UpdateTournament(tournament);
+
+            return new OkResult();
+        }
+
         [HttpDelete("tournament/{tournamentId}")]
         public IActionResult DeleteTournament([FromRoute]string tournamentId)
         {

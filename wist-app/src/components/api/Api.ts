@@ -44,6 +44,9 @@ export class Api implements IApi {
     async createTournament(name: string, userIds: string[]): Promise<void> {
         post(`${API_URL}/tournament?name=${name}`, userIds);
     }
+    async createTournamentManual(name: string, tables: string[][]): Promise<Response> {
+        return await post(`${API_URL}/tournament/manual?name=${name}`, tables);
+    }
     async deleteTournament(tournamentId: string): Promise<void> {
         await del(`${API_URL}/tournament/${tournamentId}`);
     }

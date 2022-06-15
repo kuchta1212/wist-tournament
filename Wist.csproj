@@ -59,6 +59,7 @@
     <None Remove="wist-app\src\components\tournament\TournamentBox.tsx" />
     <None Remove="wist-app\src\components\tournament\TournamentList.tsx" />
     <None Remove="wist-app\src\components\tournament\TournamentLive.tsx" />
+    <None Remove="wist-app\src\components\tournament\TournamentManualCreate.tsx" />
     <None Remove="wist-app\src\components\tournament\TournamentModal.tsx" />
     <None Remove="wist-app\src\components\tournament\TournamentPage.tsx" />
     <None Remove="wist-app\src\components\UserRank.tsx" />
@@ -94,6 +95,7 @@
     <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentBox.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentList.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentLive.tsx" />
+    <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentManualCreate.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentModal.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\tournament\TournamentPage.tsx" />
     <TypeScriptCompile Include="wist-app\src\components\UserRank.tsx" />

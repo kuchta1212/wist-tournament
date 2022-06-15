@@ -6,6 +6,7 @@ export interface IApi {
     getUsers(): Promise<User[]>;
     createUser(name: string): Promise<void>;
     createTournament(name: string, userIds: string[]): Promise<void>;
+    createTournamentManual(name: string, tables: string[][]): Promise<Response>;
     deleteTournament(tournamentId: string): Promise<void>;
     getTournament(tournamentId: string): Promise<Tournament>;
     getTournaments(): Promise<Tournament[]>;

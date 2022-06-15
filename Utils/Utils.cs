@@ -49,6 +49,28 @@
             return this.GenerateParticipantGroupsCore(playingParticipants, new List<Participant>(), amountOfGroups);
         }
 
+        public List<List<Participant>> GetInitialParticipantGroups(List<Participant> participants, List<List<string>> tables)
+        {
+            var groups = new List<List<Participant>>();
+            foreach(var table in tables)
+            {
+                var group = new List<Participant>();
+                foreach(var userId in table)
+                {
+                    var participant = participants.FirstOrDefault(p => p.User.Id == userId);
+                    if(participant == null)
+                    {
+                        throw new NotSupportedException("Neexistujici participant");
+                    }
+
+                    group.Add(participant);
+                }
+                groups.Add(group);
+            }
+
+            return groups;
+        }
+
         public List<List<Participant>> GenerateParticipantGroupsCore(List<Participant> participants, List<Participant> mustBe, int amountOfGroups)
         {
             var nonSelectedIndexes = new List<int>();

@@ -35,7 +35,7 @@ class NavMenu extends React.Component<RouteComponentProps, INavMenuState> {
                     <Container>
                         <NavbarBrand className="text-light" tag={Link} to="/">Wist Grandslam</NavbarBrand>
                         <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-                        {this.props.location.pathname.includes("tournament") ? this.renderActionButtons() : null}
+                        {this.props.location.pathname.includes("tournament") && !this.props.location.pathname.includes("manual-create") ? this.renderActionButtons() : null}
                     </Container>
                 </Navbar>
             </header>
