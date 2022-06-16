@@ -181,15 +181,21 @@ export class ParticipantRank extends React.Component<ParticipantRankProps, Parti
             return -1;
         }
 
-        if (p1.pointMedian > p2.pointMedian) {
+        if (p1.amountOfVictories < p2.amountOfVictories) {
             return 1;
-        } else if (p1.pointMedian < p2.pointMedian) {
+        } else if (p1.amountOfVictories > p2.amountOfVictories) {
             return -1;
         }
 
-        if (p1.pointAvg > p2.pointAvg) {
+        if (p1.pointMedian < p2.pointMedian) {
             return 1;
-        } else if (p1.pointAvg < p2.pointAvg) {
+        } else if (p1.pointMedian > p2.pointMedian) {
+            return -1;
+        }
+
+        if (p1.pointAvg < p2.pointAvg) {
+            return 1;
+        } else if (p1.pointAvg > p2.pointAvg) {
             return -1;
         }
 

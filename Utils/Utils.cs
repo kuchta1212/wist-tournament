@@ -163,7 +163,7 @@
                     }
                 }
 
-                mustBe.AddRange(dict.Where(p => p.Value > 2).Select(p => allParticipants.First(ap => ap.Id == p.Key)).ToList());
+                mustBe.AddRange(dict.Where(p => p.Value < 2).Select(p => allParticipants.First(ap => ap.Id == p.Key)).ToList());
             } 
             else
             {
@@ -201,13 +201,13 @@
                 }
                 else
                 {
-                    player.Participant.TournamentPoints.AvaragePlace = this.GetAvg(participantPoints[player.Participant.Id].Select(pr => pr.Place).ToList(), gamePlace);
+                    player.Participant.TournamentPoints.AvaragePlace = this.GetAvg(participantPoints[player.Participant.Id].Select(pr => pr.Place).ToList());
                     if (gamePlace == 1)
                     {
                         player.Participant.TournamentPoints.AmountOfVictories++;
                     }
-                    player.Participant.TournamentPoints.PointAvg = this.GetAvg(participantPoints[player.Participant.Id].Select(pr => pr.Points).ToList(), gamePoints.Points);
-                    player.Participant.TournamentPoints.PointMedian = this.GetMedian(participantPoints[player.Participant.Id].Select(pr => pr.Points).ToList(), gamePoints.Points);
+                    player.Participant.TournamentPoints.PointAvg = this.GetAvg(participantPoints[player.Participant.Id].Select(pr => pr.Points).ToList());
+                    player.Participant.TournamentPoints.PointMedian = this.GetMedian(participantPoints[player.Participant.Id].Select(pr => pr.Points).ToList());
                 }
             }
         }
@@ -219,15 +219,13 @@
                 .ToDictionary(g => g.Players.First(p => p.Participant.Id == participantId).Id, g => g);
         }
 
-        private double GetAvg(List<int> results, int actualOne)
+        private double GetAvg(List<int> results)
         {
-            results.Add(actualOne);
             return Math.Round(results.Average(), 2);
         }
 
-        private int GetMedian(List<int> results, int actualOne)
+        private int GetMedian(List<int> results)
         {
-            results.Add(actualOne);
             var len = results.Count;
             if(len == 0)
             {
