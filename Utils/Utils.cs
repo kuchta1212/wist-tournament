@@ -93,9 +93,9 @@
                 if (mustBeCount > 0)
                 {
                     var min = Math.Min(mustBeCount, 4);
-                    for(var j = mustBeIndex; j < min; j++)
+                    for(var j = 0; j < min; j++)
                     {
-                        group.Add(mustBe[j]);
+                        group.Add(mustBe[mustBeIndex]);
                         mustBeIndex++;
                         mustBeCount--;
                     }
